@@ -12,7 +12,7 @@ export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSave
   const [autoSave, setAutoSave] = useState(true)
   let maxPageIndex
   let startPageIndex
-
+ 
   updateBrowserTabText(pefObject.metaData.title)
 
   useEffect(() => {
