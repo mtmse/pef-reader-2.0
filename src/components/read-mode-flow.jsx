@@ -7,12 +7,12 @@ import { FormatModeEnum, CookieEnum } from "../data/enums.js";
 import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 
 export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject }) {
-  const [bookView, setBookView] = useState(FormatModeEnum.BRAILLE_VIEW)
+  const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
   const [hasScrolled, setHasScrolled] = useState(false)
   const [autoSave, setAutoSave] = useState(true)
   let maxPageIndex
   let startPageIndex
-
+ 
   updateBrowserTabText(pefObject.metaData.title)
 
   useEffect(() => {
@@ -317,15 +317,6 @@ if (autoSave && scrollableElement) {
                     <legend className="font-medium mb-px">Växla vy</legend>
                     <div className="flex flex-row justify-start align-center">
                       <input type="radio"
-                        id="braille-view"
-                        className="m-1"
-                        checked={bookView === FormatModeEnum.BRAILLE_VIEW}
-                        onChange={() => setBookView(FormatModeEnum.BRAILLE_VIEW)}
-                      />
-                      <label htmlFor="braille-view">Punktskriftvy</label>
-                    </div>
-                    <div className="flex flex-row justify-start align-center">
-                      <input type="radio"
                         id="normal-view"
                         className="m-1"
                         checked={bookView === FormatModeEnum.NORMAL_VIEW}
@@ -333,7 +324,16 @@ if (autoSave && scrollableElement) {
                       />
                       <label htmlFor="normal-view">Svartskriftvy</label>
                     </div>
-                  </fieldset>
+                    <div className="flex flex-row justify-start align-center">
+                      <input type="radio"
+                        id="braille-view"
+                        className="m-1"
+                        checked={bookView === FormatModeEnum.BRAILLE_VIEW}
+                        onChange={() => setBookView(FormatModeEnum.BRAILLE_VIEW)}
+                      />
+                      <label htmlFor="braille-view">Punktskriftvy</label>
+                    </div>
+                   </fieldset>
                 </div>
               </div>
             </div>
