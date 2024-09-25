@@ -11,9 +11,15 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   const [maxPageIndex, setMaxPageIndex] = useState(0);
   const [firstPageIndex, setFirstPageIndex] = useState(0)
   const [currentPageIndex, setCurrentPageIndex] = useState(null)
-  const [bookView, setBookView] = useState(FormatModeEnum.BRAILLE_VIEW)
+  const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
   const [autoSave, setAutoSave] = useState(true)
   const headingRefs = useRef({}); // Store references to the page headings
+
+  const [selectedView, setSelectedView] = useState(bookView); // Temporär vy
+
+  const handleConfirm = () => {
+    setBookView(selectedView); // Uppdatera när knappen trycks
+  };
 
   updateBrowserTabText(pefObject.metaData.title);
 
@@ -233,7 +239,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"
               >
                 <div className="flex flex-col items-center justify-center h-full w-full mx-4">
-                  <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer:</label>
+                  <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: (av {maxPageIndex} sidor)</label>
                   <div className="flex flex-row w-full">
                     <input className="border-y border border-neutral-400 w-full max-w-56" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
                     <button
@@ -248,39 +254,49 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 </div>
               </form>
 
-              <div className="p-1 flex flex-col justify-center items-center h-full w-60
-               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200">
-                <fieldset>
-                  <legend className="font-medium mb-px">Växla vy:</legend>
-                  <div className="flex flex-row justify-center items-center">
-                    <input
-                      type="radio"
-                      id="braille-view"
-                      name="view"
-                      className="m-1"
-                      value="BRAILLE"
-                      checked={bookView === FormatModeEnum.BRAILLE_VIEW}
-                      onChange={() => setBookView(FormatModeEnum.BRAILLE_VIEW)}
-                    />
-                    <label htmlFor="braille-view">Punktskrift</label>
-                  </div>
-                  <div className="flex flex-row justify-center items-center">
-                    <input
-                      type="radio"
-                      id="normal-view"
-                      name="view"
-                      className="m-1"
-                      value="BRAILLE"
-                      checked={bookView === FormatModeEnum.NORMAL_VIEW}
-                      onChange={() => setBookView(FormatModeEnum.NORMAL_VIEW)}
-                    />
-                    <label htmlFor="normal-view">Svartskrift</label>
-                  </div>
-                </fieldset>
-              </div>
+          <div className="p-1 flex flex-col justify-center items-center h-full w-60
+          bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200">
+          <fieldset>
+            <legend className="font-medium mb-px">Växla vy:</legend>
+            <div className="flex flex-row justify-center items-center">
+              <input
+                type="radio"
+                id="normal-view"
+                name="view"
+                className="m-1"
+                value="NORMAL_VIEW"
+                checked={selectedView === FormatModeEnum.NORMAL_VIEW}
+                onChange={() => setSelectedView(FormatModeEnum.NORMAL_VIEW)} // Uppdatera tillfällig vy
+              />
+              <label htmlFor="normal-view">Svartskrift</label>
             </div>
-          </div>
+            <div className="flex flex-row justify-center items-center">
+              <input
+                type="radio"
+                id="braille-view"
+                name="view"
+                className="m-1"
+                value="BRAILLE_VIEW"
+                checked={selectedView === FormatModeEnum.BRAILLE_VIEW}
+                onChange={() => setSelectedView(FormatModeEnum.BRAILLE_VIEW)} // Uppdatera tillfällig vy
+              />
+              <label htmlFor="braille-view">Punktskrift</label>
+            </div>
+            {/* Knapp för att bekräfta valet */}
+            <button
+                className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
+                bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
+                hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
+                focus:from-emerald-400 focus:to-emerald-700 focus:text-white"
+                onClick={handleConfirm}
+              >
+                Välj
+              </button>
+          </fieldset>
         </div>
+      </div>
+    </div>
+  </div>
 
         <div className="flex flex-col bg-neutral-50 rounded my-20 pt-5 pb-20 px-10 w-full border shadow">
           <h3 className="font-bold text-lg mb-3" tabIndex={0}>Grundläggande bibliografisk information</h3>
