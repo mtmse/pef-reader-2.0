@@ -39,15 +39,21 @@ export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSave
   }, [savedPageIndex, hasScrolled]);
 
   useEffect(() => {
-    if (autoSave) {
+    const scrollableElement = document.getElementById("pages-scrollable-element");
+
+if (autoSave && scrollableElement) {
       const handleScroll = () => {
-        const pages = document.querySelectorAll("[id^='page-']");
+        const pages = scrollableElement.querySelectorAll("[id^='page-']");
         let lastVisiblePageIndex = null;
 
+        // Get the top position of the scrollable element
+        const scrollableElementTop = scrollableElement.getBoundingClientRect().top;
+
+        // Loop through each page to determine which one is currently visible
         pages.forEach(page => {
           const rect = page.getBoundingClientRect();
-          // Check if the page is within the viewport
-          if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+          // Check if the bottom of the H3 page-id is above or equal to the top of the viewport of the scrollable element          
+          if (rect.top <= scrollableElementTop) {
             lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10);
           }
         });
@@ -55,16 +61,16 @@ export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSave
         // If a visible page index is found, update the savedPageIndex state
         if (lastVisiblePageIndex) {
           setSavedPageIndex(lastVisiblePageIndex);
-          console.log("Last saved page", lastVisiblePageIndex);
+          console.log("LastvisiblePage", lastVisiblePageIndex);
         }
       };
 
       // Attach the scroll event listener to the scrollable element
-      window.addEventListener("scroll", handleScroll);
+      scrollableElement.addEventListener("scroll", handleScroll);
 
       // Cleanup function to remove the scroll event listener when the component unmounts or autoSave is toggled off
       return () => {
-        window.removeEventListener("scroll", handleScroll);
+        scrollableElement.removeEventListener("scroll", handleScroll);
       };
     }
   }, [autoSave, setSavedPageIndex]);
@@ -266,7 +272,7 @@ export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSave
  */}
 
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-full">
-          <div id="pages-scrollable-element" className="h-auto p-10">
+          <div id="pages-scrollable-element" className="h-96 p-10 w-full flex flex-col m-auto overflow-y-auto  overflow-hidden">
             {renderPages()}
           </div>
 
