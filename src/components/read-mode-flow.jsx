@@ -9,7 +9,8 @@ import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject }) {
   const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
   const [hasScrolled, setHasScrolled] = useState(false)
-  const [autoSave, setAutoSave] = useState(true)
+  // const [autoSave, setAutoSave] = useState(true)
+  let autoSave = true;
   let maxPageIndex
   let startPageIndex
  
@@ -25,8 +26,9 @@ export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSave
     if (!hasScrolled && savedPageIndex !== null) {
       const pageId = `page-${savedPageIndex}`;
       const element = document.getElementById(pageId);
+      console.log("Element är", element)
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+        element.scrollIntoView({ behavior: 'smooth', block: "center" });
         element.focus();
         setHasScrolled(true);
       } else {
@@ -38,42 +40,74 @@ export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSave
     }
   }, [savedPageIndex, hasScrolled]);
 
-  useEffect(() => {
-    const scrollableElement = document.getElementById("pages-scrollable-element");
+//   useEffect(() => {
+//     const scrollableElement = document.getElementById("pages-scrollable-element");
 
-if (autoSave && scrollableElement) {
-      const handleScroll = () => {
-        const pages = scrollableElement.querySelectorAll("[id^='page-']");
-        let lastVisiblePageIndex = null;
+// if (autoSave && scrollableElement) {
+//       const handleScroll = () => {
+//         const pages = scrollableElement.querySelectorAll("[id^='page-']");
+//         let lastVisiblePageIndex = null;
 
-        // Get the top position of the scrollable element
-        const scrollableElementTop = scrollableElement.getBoundingClientRect().top;
+//         // Get the top position of the scrollable element
+//         const scrollableElementTop = scrollableElement.getBoundingClientRect().top;
 
-        // Loop through each page to determine which one is currently visible
-        pages.forEach(page => {
-          const rect = page.getBoundingClientRect();
-          // Check if the bottom of the H3 page-id is above or equal to the top of the viewport of the scrollable element          
-          if (rect.top <= scrollableElementTop) {
-            lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10);
-          }
-        });
+//         // Loop through each page to determine which one is currently visible
+//         pages.forEach(page => {
+//           const rect = page.getBoundingClientRect();
+//           // Check if the bottom of the H3 page-id is above or equal to the top of the viewport of the scrollable element          
+//           if (rect.top <= scrollableElementTop) {
+//             lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10);
+//           }
+//         });
 
-        // If a visible page index is found, update the savedPageIndex state
-        if (lastVisiblePageIndex) {
-          setSavedPageIndex(lastVisiblePageIndex);
-          console.log("LastvisiblePage", lastVisiblePageIndex);
+//         // If a visible page index is found, update the savedPageIndex state
+//         if (lastVisiblePageIndex) {
+//           setSavedPageIndex(lastVisiblePageIndex);
+//           console.log("LastvisiblePage", lastVisiblePageIndex);
+//         }
+//       };
+
+//       // Attach the scroll event listener to the scrollable element
+//       scrollableElement.addEventListener("scroll", handleScroll);
+
+//       // Cleanup function to remove the scroll event listener when the component unmounts or autoSave is toggled off
+//       return () => {
+//         scrollableElement.removeEventListener("scroll", handleScroll);
+//       };
+//     }
+//   }, [autoSave, setSavedPageIndex]);
+
+useEffect(() => {
+  if (autoSave) {
+    const handleScroll = () => {
+      const pages = document.querySelectorAll("[id^='page-']");
+      let lastVisiblePageIndex = null;
+
+      pages.forEach(page => {
+        const rect = page.getBoundingClientRect();
+        // Check if the page is within the viewport
+        if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+          lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10) - 2; // hamna rätt?
         }
-      };
+      });
 
-      // Attach the scroll event listener to the scrollable element
-      scrollableElement.addEventListener("scroll", handleScroll);
+      // Update savedPageIndex with the last visible page
+      if (lastVisiblePageIndex) {
+        setSavedPageIndex(lastVisiblePageIndex);
+        console.log("Last saved page", lastVisiblePageIndex);
+      }
+    };
 
-      // Cleanup function to remove the scroll event listener when the component unmounts or autoSave is toggled off
-      return () => {
-        scrollableElement.removeEventListener("scroll", handleScroll);
-      };
-    }
-  }, [autoSave, setSavedPageIndex]);
+    // Add event listener for the window scroll
+    window.addEventListener("scroll", handleScroll);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }
+}, [autoSave, setSavedPageIndex]);
+
 
   function handleScrollToPageIndex(index) {
     const pageId = `page-${index}`
@@ -85,9 +119,11 @@ if (autoSave && scrollableElement) {
       if (document.activeElement !== element) {
         element.tabIndex = 0
         element.focus();
+        console.log("Sätter fokus på från att ha angett sidnummer", element);
+
       }
 
-      element.scrollIntoView({ behavior: "smooth" });
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
 
     } else {
       alert(`Sidan '${index}' kunde inte hittas.`);
@@ -136,16 +172,17 @@ if (autoSave && scrollableElement) {
                         return;
                       }
 
-                      // Check if the last character of the processedRow is not ⠤
+                      // // Check if the last character of the processedRow is not ⠤
                       const lastChar = processedRow.charAt(processedRow.length - 1);
 
                       if (lastChar !== '-' && lastChar !== '⠤') {
                         // Append the processedRow to pageRows
                         pageRows += processedRow;
-                      } else {
+                      } 
+                      else {
                         // If the last character is ⠤, remove it
                         pageRows += processedRow.slice(0, -1);
-                      }
+                      }                     
                     }
                   }
                 });
@@ -156,18 +193,19 @@ if (autoSave && scrollableElement) {
                 <div key={`${i}-${j}-${k}`}>
                   <h3
                     id={`page-${thisPageIndex}`}
-                    className="font-black"
+                    className="font-black mt-2"
                     tabIndex={thisPageIndex === savedPageIndex ? 0 : null}
                     onFocus={() => {
                       // Scroll the h3 element into view
                       const h3Element = document.getElementById(`page-${thisPageIndex}`);
                       if (h3Element) {
-                        h3Element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        h3Element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }}}
                     >
                     Sida {thisPageIndex}
                   </h3>
-                  <div className="whitespace-pre-wrap break-words overflow-hidden w-100">{pageRows}</div>
+                  <div className>{pageRows}</div>
+                  
                 </div>
               );
 
@@ -205,46 +243,46 @@ if (autoSave && scrollableElement) {
   }
 
   return (
-    <div className="flex flex-col pt-5 px-10 w-full">
-      <button onClick={() => setReadmode(false)} className="button mb-5">
-        Tillbaka till startsida
-      </button>
+    // <div className="flex flex-col pt-5 px-10 w-full">
+    //   <button onClick={() => setReadmode(false)} className="button mb-5">
+    //     Tillbaka till startsida
+    //   </button>
 
-      {cookiePermission === CookieEnum.ALLOWED && (
-        <div className={`mt-3 px-5 py-3 border w-64 rounded shadow text-white border	
-        ${autoSave ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-500 border-emerald-600"
-            : "bg-gradient-to-br from-red-500 via-red-600 to-red-500 border-red-600"}`}>
+    //   {cookiePermission === CookieEnum.ALLOWED && (
+    //     <div className={`mt-3 px-5 py-3 border w-64 rounded shadow text-white border	
+    //     ${autoSave ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-500 border-emerald-600"
+    //         : "bg-gradient-to-br from-red-500 via-red-600 to-red-500 border-red-600"}`}>
 
-          <fieldset>
-            <legend className="font-bold mb-1">Automatisk sparning</legend>
-            <div className="flex justify-start items-center">
-              <input type="radio"
-                id="autosave-radio-on"
-                name="autosave"
-                className="m-1"
-                checked={autoSave === true}
-                onChange={() => setAutoSave(true)}
-              />
-              <label htmlFor="autosave-radio-on">Aktivera sparning</label>
-            </div>
+    //       <fieldset>
+    //         <legend className="font-bold mb-1">Automatisk sparning</legend>
+    //         <div className="flex justify-start items-center">
+    //           <input type="radio"
+    //             id="autosave-radio-on"
+    //             name="autosave"
+    //             className="m-1"
+    //             checked={autoSave === true}
+    //             onChange={() => setAutoSave(true)}
+    //           />
+    //           <label htmlFor="autosave-radio-on">Aktivera sparning</label>
+    //         </div>
 
-            <div className="flex justify-start items-center">
-              <input type="radio"
-                id="autosave-radio-off"
-                name="autosave"
-                className="m-1"
-                checked={autoSave === false}
-                onChange={() => setAutoSave(false)}
-              />
-              <label htmlFor="autosave-radio-off">Inaktivera sparning</label>
-            </div>
-          </fieldset>
-        </div>
-      )}
+    //         <div className="flex justify-start items-center">
+    //           <input type="radio"
+    //             id="autosave-radio-off"
+    //             name="autosave"
+    //             className="m-1"
+    //             checked={autoSave === false}
+    //             onChange={() => setAutoSave(false)}
+    //           />
+    //           <label htmlFor="autosave-radio-off">Inaktivera sparning</label>
+    //         </div>
+    //       </fieldset>
+    //     </div>
+    //   )} mt-20 //nedan
 
-      <div className="flex flex-col justify-start items-center mt-20">
-        {pefObject.metaData.title && <h2 id="exit-from-scrollable-element" className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
-        {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
+      <div className="flex flex-col justify-start items-center">
+        {/* {pefObject.metaData.title && <h2 id="exit-from-scrollable-element" className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
+        {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>} */}
 
         {!autoSave && cookiePermission === CookieEnum.ALLOWED &&
           <div className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
@@ -261,35 +299,30 @@ if (autoSave && scrollableElement) {
             </span>
           </div>
         }
-
-        {/* only for debug */ /*
-          <div className={`px-5 bg-yellow-500`}>
-            Debug mode: savedPageIndex = {savedPageIndex}
-          </div> */
-        }
-
-        {/*          from div 275   // className="w-full flex flex-col m-auto overflow-y-auto  overflow-hidden"
- */}
-
-        <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-full">
-          <div id="pages-scrollable-element" className="h-96 p-10 w-full flex flex-col m-auto overflow-y-auto  overflow-hidden">
-            {renderPages()}
-          </div>
-
-          { /* navigator buttons */}
-          <div className="h-auto rounded-b border-t-2 border-neutral-400 text-md">
+ { /* navigator buttons */}
+          <div className="h-auto rounded-b border-neutral-400 text-md w-full
+          sticky top-0 z-10">
+            
             <div className="flex flex-col sm:flex-row items-center h-full sm:h-20 w-full overflow-hidden rounded-b">
+            <div className="flex flex-col pt-2 ps-5 h-full w-full items-center justify-center flex-grow 
+                  bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2 border-neutral-200">
+                  <h2 tabIndex={0}><strong>Titel: </strong> {pefObject.metaData.title}</h2>
+                  <h2 tabIndex={0}><strong>Författare:</strong> {pefObject.metaData.author}</h2>
+                </div>
               <div className="h-10 sm:h-full w-full sm:w-1/3 border-b border-black sm:border-none">
                 <button onClick={() => {
-                  handleScrollToPageIndex(startPageIndex)
-                }} className="h-full w-full px-2
+                  setReadmode(false)
+                  // handleScrollToPageIndex(startPageIndex)
+
+                }} className="h-full w-full px-2 sm:h-full
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                  Förstasidan
+                  {/* Förstasidan */}
+                  Gå tillbaka
                 </button>
               </div>
-
+             
               <div className="flex flex-row flex-nowrap items-center h-32 sm:h-full w-full  overflow-hidden rounded-b sm:rounded-none">
                 <form onSubmit={(e) => {
                   e.preventDefault();
@@ -313,8 +346,9 @@ if (autoSave && scrollableElement) {
                     </div>
                   </div>
                 </form>
-
-                <div className="p-1 flex flex-col justify-center items-center h-full w-60 
+                
+                {/* Inte välja vy öht */}
+                {/* <div className="p-1 flex flex-col justify-center items-center h-full w-60 
                 bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200">
                   <fieldset>
                     <legend className="font-medium mb-px">Växla vy</legend>
@@ -337,17 +371,30 @@ if (autoSave && scrollableElement) {
                       <label htmlFor="braille-view">Punktskriftvy</label>
                     </div>
                    </fieldset>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
+        {/* only for debug */ /*
+          <div className={`px-5 bg-yellow-500`}>
+            Debug mode: savedPageIndex = {savedPageIndex}
+          </div> */
+        }
+
+        {/*          from div 275   // className="w-full flex flex-col m-auto overflow-y-auto  overflow-hidden"
+ */}
+
+        <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-100">
+          <div id="pages-scrollable-element" className=" p-10 w-full flex flex-col m-auto ">
+            {renderPages()}
+          </div>
         </div>
 
-        <div className="flex flex-col bg-neutral-50 rounded my-20 pt-5 pb-20 px-10 w-full border shadow">
+        {/* <div className="flex flex-col bg-neutral-50 rounded my-20 pt-5 pb-20 px-10 w-full border shadow">
           <h3 className="font-bold text-lg mb-3" tabIndex={0}>Grundläggande bibliografisk information</h3>
 
           {/* Render metadata labels */}
-          {pefObject.metaData && pefObject.metaData.language &&
+          {/* {pefObject.metaData && pefObject.metaData.language &&
             Object.entries(pefObject.metaData)
               .map(([key, value]) => {
                 return value && metadataVariableTranslation(key, pefObject.metaData.language) && (
@@ -356,16 +403,16 @@ if (autoSave && scrollableElement) {
                   </label>
                 );
               })
-          }
+          } */}
 
           {/* Render number of pages in the application */}
-          {maxPageIndex &&
+          {/*{maxPageIndex &&
             <label>
               <strong>Antal sidor i applikationen:</strong> {maxPageIndex}
             </label>
           }
-        </div>
+        </div> */}
       </div>
-    </div>
+    // </div>
   )
 }
