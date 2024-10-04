@@ -4,15 +4,16 @@ import brailleTranslator from "../utils/translator/brailleTranslator.js";
 import { filterUnnecessarySentence } from "../utils/filterSetences.js"
 import { manipulatePageIndexToRemoveUnnecessaryPages } from "../utils/filterPages.js";
 import { FormatModeEnum, CookieEnum } from "../data/enums.js";
-import { metadataVariableTranslation } from "../data/metadataTranslator.js";
+// import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 
 export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject }) {
-  const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
+  // const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
   const [hasScrolled, setHasScrolled] = useState(false)
   // const [autoSave, setAutoSave] = useState(true)
   let autoSave = true;
   let maxPageIndex
   let startPageIndex
+  let bookView = FormatModeEnum.NORMAL_VIEW
  
   updateBrowserTabText(pefObject.metaData.title)
 
