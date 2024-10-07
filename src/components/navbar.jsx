@@ -1,4 +1,4 @@
-import CookieBanner from "./cookie-banner";
+import CookieBanner from "../components/cookie-banner";
 
 export default function Navbar({ showCookieBanner, setCookiePermission }) {
   return (
