@@ -173,17 +173,23 @@ useEffect(() => {
                         return;
                       }
 
-                      // // Check if the last character of the processedRow is not ⠤
+                     
+
+                      // Check if the last character of the processedRow is not ⠱
                       const lastChar = processedRow.charAt(processedRow.length - 1);
 
-                      if (lastChar !== '-' && lastChar !== '⠤') {
-                        // Append the processedRow to pageRows
-                        pageRows += processedRow;
+                      if (lastChar !== '⠱' && lastChar !== ":") {
+                      // Append the processedRow to pageRows
+                      pageRows += processedRow;
                       } 
                       else {
-                        // If the last character is ⠤, remove it
+                      // If the last character is ⠱, remove it
                         pageRows += processedRow.slice(0, -1);
-                      }                     
+                      }  
+                      //Ta bort bindestreck och mellanslag för att slå ihop avstavade ord
+                       pageRows = pageRows.replace(/-\s+/g, '');
+                       pageRows = pageRows.replace(/:/g, '');
+                   
                     }
                   }
                 });
