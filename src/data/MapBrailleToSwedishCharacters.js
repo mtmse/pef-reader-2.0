@@ -105,7 +105,6 @@ export const mapBrailleToPunctuation = {
     "⠹⠹": "‰",
     "⠼⠪" : "<",
     "⠼⠕" : ">",
-    "⠠⠤" : "—", //långt mellanslag
 
     /* translating three-letter Braille sequences into punctuation (not yet tested and requires adjustments in the brailleTranslator code) */
     "⠦⠉⠴": "©",
