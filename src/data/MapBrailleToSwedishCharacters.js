@@ -5,8 +5,10 @@ export const stopSign = "⠱"
 export const blankSign = "⠀"
 export const ignoreBrailleCharacters = [ // Remove and correct later if needed
     "⠨", "⠱", "⠬", "⠣", // single character
-    "⠠⠄", "⠠⠤", "⠨⠔", "⠱⠔", "⠨⠨", "⠨⠶", "⠱⠶", "⠨⠤", "⠱⠤", "⠨⠢", "⠱⠢", "⠱⠂", "⠨⠖", "⠱⠖" // double characters
+    "⠠⠄", "⠨⠔", "⠱⠔", "⠨⠨", "⠨⠶", "⠱⠶", "⠨⠤", "⠱⠤", "⠨⠢", "⠱⠢", "⠱⠂", "⠨⠖", "⠱⠖" // double characters
 ]
+
+//"⠠⠤" tog bort från
 
 /* Scandinavian Braille */
 // Reference: https://www.pharmabraille.com/wp-content/uploads/2015/01/Svenska_skrivregler_for_punktskrift.pdf by Punktskriftsnämnden
@@ -82,6 +84,8 @@ export const mapBrailleToPunctuation = {
     "⠐": "'",
     "⠤": "-",
     "⠹": "%",
+    "⠠⠤" : "—", //långt mellanslag
+
 
     /* translating two-letter Braille sequences into punctuation */
     "⠘⠉": "¢",
@@ -101,6 +105,7 @@ export const mapBrailleToPunctuation = {
     "⠹⠹": "‰",
     "⠼⠪" : "<",
     "⠼⠕" : ">",
+    "⠠⠤" : "—", //långt mellanslag
 
     /* translating three-letter Braille sequences into punctuation (not yet tested and requires adjustments in the brailleTranslator code) */
     "⠦⠉⠴": "©",
