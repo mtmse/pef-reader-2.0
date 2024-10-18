@@ -77,7 +77,7 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
     }
 
     return (
-        <div className="flex flex-col pt-10 px-20 w-full">
+        <div className="flex flex-col pt-10 px-20 w-full screen-view">
 
             <div className="flex flex-col justify-center items-center p-4 md:p-8 lg:p-12">
                 <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
@@ -85,7 +85,7 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                         <img src={brailleIcon} className="w-full h-full" alt="Punktskriftsikon" />
                     </div>
                     <div className="text-center md:text-left">
-                        <h2 id="MainContentArea" className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">Från punktskrift till svartskrift på några sekunder</h2>
+                        <h2 id="MainContentArea" tabIndex={0} className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">Från punktskrift till svartskrift på några sekunder</h2>
                     </div>
                 </div>
                 <div className="mt-4 md:mt-6 lg:mt-8 px-4 md:px-8 lg:px-12 text-center md:text-left">

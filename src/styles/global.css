@@ -10,12 +10,19 @@ body,
 html {
     margin: 0;
     padding: 0;
-    background-image: url('../media/bg_body.jpg');
+    /* background-image: url('../media/bg_body.jpg');
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: center;
+    background-position: center; */
     font-size: 16px;
     /* Default font size */
+}
+
+.screen-view {
+    max-width: 1080px;
+    margin: 0px auto;
+    background-color: white;
+
 }
 
 /* Font size adjustments for different screen sizes */

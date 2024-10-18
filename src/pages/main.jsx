@@ -43,7 +43,8 @@ export default function MainPage({ cookiePermission, setCookiePermission }) {
   {/* Villkorlig rendering av Navbar */}
   {(!viewMode || (viewMode && howToRead === null)) && <Navbar />}
 
-  <main id="MainContentArea" className="mx-auto">
+    {/* removing MainContentArea from id cause interfering with heading and */}
+  <main id="" className="main-view">
     {!viewMode ? (
       <UploadFile
         setCookiePermission={setCookiePermission}

@@ -286,28 +286,9 @@ useEffect(() => {
     //       </fieldset>
     //     </div>
     //   )} mt-20 //nedan
-
-      <div className="flex flex-col justify-start items-center">
-        {/* {pefObject.metaData.title && <h2 id="exit-from-scrollable-element" className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
-        {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>} */}
-
-        {!autoSave && cookiePermission === CookieEnum.ALLOWED &&
-          <div className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
-            <span tabIndex={0}>
-              Om du aktiverar automatisk sparning, kommer din position att sparas varje gång du scrollar förbi en sida.
-            </span>
-          </div>
-        }
-
-        {cookiePermission === CookieEnum.DENIED &&
-          <div className="bg-yellow-200 border border-yellow-300 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
-            <span tabIndex={0}>
-              Automatisk sparning är inte tillgänglig eftersom kakor är inaktiverade.
-            </span>
-          </div>
-        }
- { /* navigator buttons */}
-          <div className="h-auto rounded-b border-neutral-400 text-md w-full
+    <>
+    { /* navigator buttons */}
+          <div className="h-auto border-neutral-400 text-md w-full border
           sticky top-0 z-10">
             
             <div className="flex flex-col sm:flex-row items-center h-full sm:h-20 w-full overflow-hidden rounded-b">
@@ -326,7 +307,7 @@ useEffect(() => {
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                   {/* Förstasidan */}
-                  Gå tillbaka
+                  Gå tillbaka till uppladdning
                 </button>
               </div>
              
@@ -344,15 +325,18 @@ useEffect(() => {
                     <div className="flex flex-row w-full">
 
                       <input className="border-y border border-neutral-400 w-full max-w-56" id="goToPage" type="number" min={startPageIndex} max={maxPageIndex} required />
-                      <button type="submit" className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
+                      <button type="submit" className="px-2 mx-1 h-full w-1/2 min-w-16 max-w-32 border border-gray-400 
                       bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
                       hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
                       focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                        Gå till
+                        Gå till sida
                       </button>
                     </div>
                   </div>
                 </form>
+                </div>
+            </div>
+          </div>
                 
                 {/* Inte välja vy öht */}
                 {/* <div className="p-1 flex flex-col justify-center items-center h-full w-60 
@@ -379,9 +363,7 @@ useEffect(() => {
                     </div>
                    </fieldset>
                 </div> */}
-              </div>
-            </div>
-          </div>
+             
         {/* only for debug */ /*
           <div className={`px-5 bg-yellow-500`}>
             Debug mode: savedPageIndex = {savedPageIndex}
@@ -390,6 +372,27 @@ useEffect(() => {
 
         {/*          from div 275   // className="w-full flex flex-col m-auto overflow-y-auto  overflow-hidden"
  */}
+
+      <div className="flex flex-col justify-center items-center screen-view">
+        {/* {pefObject.metaData.title && <h2 id="exit-from-scrollable-element" className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
+        {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>} */}
+
+        {!autoSave && cookiePermission === CookieEnum.ALLOWED &&
+          <div className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
+            <span tabIndex={0}>
+              Om du aktiverar automatisk sparning, kommer din position att sparas varje gång du scrollar förbi en sida.
+            </span>
+          </div>
+        }
+
+        {cookiePermission === CookieEnum.DENIED &&
+          <div className="bg-yellow-200 border border-yellow-300 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
+            <span tabIndex={0}>
+              Automatisk sparning är inte tillgänglig eftersom kakor är inaktiverade.
+            </span>
+          </div>
+        }
+ 
 
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-100">
           <div id="pages-scrollable-element" className=" p-10 w-full flex flex-col m-auto ">
@@ -420,6 +423,7 @@ useEffect(() => {
           }
         </div> */}
       </div>
+      </>
     // </div>
   )
 }

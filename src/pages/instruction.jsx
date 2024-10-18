@@ -7,7 +7,8 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
 
   return (
     <>
-    <main className="mx-auto px-20 pt-10 pb-20">
+    <main className="mx-auto main-view">
+      <div className="screen-view p-10">
       <h2 className="text-2xl font-bold mb-4" id="MainContentArea" tabIndex={0}>Välkommen till Digital punktläsare!</h2>
       <p className="mb-6">Denna applikation är utformad för att göra det enklare för användare utan eller med synnedsättning att få tillgång till punktskriftsböcker digitalt och läsa dem direkt i webbläsaren.</p>
 
@@ -77,7 +78,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
       <div className="w-full flex justify-center">
         {cookiePermission ?
           <button className="button" onClick={() => { navigate('/') }}>
-            Ta mig till startsidan
+        Gå till uppladdningssida  
           </button>
           :
           <button className="button" onClick={() => {
@@ -87,6 +88,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
             Godkänn kakor och ta mig till startsidan
           </button>
         }
+      </div>
       </div>
     </main>
     <Footer />
