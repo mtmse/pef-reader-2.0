@@ -5,6 +5,7 @@ import { useDropzone } from 'react-dropzone'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import brailleIcon from '../media/braille-icon.png';
+import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 
 export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
@@ -140,8 +141,33 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                     {fileName}</span>
             </div>
 
+            <div className="mt-10">
+                <legend className="text-2xl font-bold mb-2">Information om din uppladdade pef</legend>
+
+                {pefObject && pefObject.metaData && pefObject.metaData.language ? (
+                Object.entries(pefObject.metaData).map(([key, value]) => {
+                    return (
+                    value &&
+                    metadataVariableTranslation(key, pefObject.metaData.language) && (
+                        <label key={key}>
+                        <p>
+                            <strong>{metadataVariableTranslation(key, pefObject.metaData.language)}:</strong> {value}
+                        </p>
+                        </label>
+                    
+                    )
+                    );
+                })
+                ) : (
+                <p>Ingen fil uppladdad. Välj fil att ladda upp.</p>
+                )}
+            </div>
+
             <fieldset className="mt-10">
-                <legend className="text-2xl font-bold" >Hur vill du läsa boken?</legend>
+                {pefObject && pefObject.metaData && pefObject.metaData.title 
+                ? <legend className="text-2xl font-bold" >Hur vill du läsa boken {pefObject.metaData.title}? 
+                </legend>
+                : <legend className="text-2xl font-bold" >Hur vill du läsa boken?</legend>}
                 <div className="flex flex-row my-6">
                     <input
                         type="radio"
@@ -171,7 +197,7 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                 </div>
             </fieldset>
 
-            <div className="mt-8 mb-60">
+            <div className="mt-2 mb-10">
                 {(fileLoadStatus === FileLoadStatusEnum.INITIAL || fileLoadStatus === FileLoadStatusEnum.SUCCESSFUL) && (
                     <button onClick={HandleSwapToReadMode} className="button" >Läs boken</button>
                 )}
