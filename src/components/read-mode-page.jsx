@@ -143,12 +143,12 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
 
 
   return (
-    <div className="flex flex-col pt-5 px-10 w-full">
-      <button onClick={() => setReadmode(false)} className="button mb-5">
+    <div className="flex flex-col pt-5 px-10 w-full screen-view">
+      <button onClick={() => setReadmode(false)} className="button mb-1">
         Tillbaka till startsida
       </button>
 
-      {cookiePermission === CookieEnum.ALLOWED && (
+      {/* {cookiePermission === CookieEnum.ALLOWED && (
         <div className={`mt-3 px-5 py-3 border w-64 rounded shadow text-white border	
         ${autoSave ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-500 border-emerald-600"
             : "bg-gradient-to-br from-red-500 via-red-600 to-red-500 border-red-600"}`}>
@@ -178,7 +178,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
             </div>
           </fieldset>
         </div>
-      )}
+      )} */}
 
       <div className="flex flex-col justify-start items-center mt-20">
         {pefObject.metaData.title && <h2 className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
