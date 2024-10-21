@@ -47,9 +47,9 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
       <div className="mb-8">
         <h4 className="text-lg font-bold mb-2">5. Navigera i boken:</h4>
         <p>Det finns knappar nedanför bokens sidor för att navigera runt i boken. Beroende på vilket läge du använder kan du använda dem för att hoppa mellan sidor. Observera att om automatisk sparning är aktiverat och du navigerar till första sidan eller till en annan sida, sparas den nya sidan som senaste läsposition.</p>
-        <p className="my-2">
+        {/* <p className="my-2">
           Själva applikationen är anpassad för att användas tillsammans med <strong>NVDA</strong> <em>(NonVisual Desktop Access)</em> men fungerar också utan.
-        </p>
+        </p> */}
         <ul className="list-disc pl-6">
           <li className="my-2">
             I läget "Löpande text" behöver du navigera till bokens titel med tabb och sedan vidare till den senaste sparade positionen markerad med en h3-rubrik. Därefter navigerar du med piltangenterna tills du har läst klart boken.
