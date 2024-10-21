@@ -211,7 +211,7 @@ useEffect(() => {
                     >
                     Sida {thisPageIndex}
                   </h3>
-                  <div className>{pageRows}</div>
+                  <div>{pageRows}</div>
                   
                 </div>
               );
