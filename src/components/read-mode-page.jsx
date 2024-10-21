@@ -12,9 +12,9 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   const [firstPageIndex, setFirstPageIndex] = useState(0)
   const [currentPageIndex, setCurrentPageIndex] = useState(null)
   const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
-  const [autoSave, setAutoSave] = useState(true)
+  // const [autoSave, setAutoSave] = useState(true)
   const headingRefs = useRef({}); // Store references to the page headings
-
+let autoSave = true;
   const [selectedView, setSelectedView] = useState(bookView); // Temporär vy
 
   const handleConfirm = () => {
