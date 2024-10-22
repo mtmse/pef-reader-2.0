@@ -254,9 +254,9 @@ let autoSave = true;
                 </div>
               </form>
 
-          <div className="p-1 flex flex-col justify-center items-center h-full w-60
-          bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200">
-          <fieldset>
+          {/* <div className="p-1 flex flex-col justify-center items-center h-full w-60
+          bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200"> */}
+          {/* <fieldset>
             <legend className="font-medium mb-px">Växla vy:</legend>
             <div className="flex flex-row justify-center items-center">
               <input
@@ -283,7 +283,7 @@ let autoSave = true;
               <label htmlFor="braille-view">Punktskrift</label>
             </div>
             {/* Knapp för att bekräfta valet */}
-            <button
+            {/* <button
                 className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
                 bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
                 hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
@@ -292,8 +292,8 @@ let autoSave = true;
               >
                 Välj
               </button>
-          </fieldset>
-        </div>
+          </fieldset> */} 
+        {/* </div> */}
       </div>
     </div>
   </div>
