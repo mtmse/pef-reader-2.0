@@ -22,7 +22,14 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
       </div>
 
       <div className="mb-8">
-        <h4 className="text-lg font-bold mb-2">2. Välj läsläge:</h4>
+        <h4 className="text-lg font-bold mb-2">2. Bokens grundläggande bibliografiska information:</h4>
+        <p className="my-2">
+          När du laddar upp en pef-fil kan du ta del av mer information om den uppladdade boken, som beskrivning, utgivare, och datum.
+        </p>
+      </div>
+
+      <div className="mb-8">
+        <h4 className="text-lg font-bold mb-2">3. Välj läsläge:</h4>
         <p>Du kan välja mellan två läslägen:</p>
         <ul className="list-disc pl-6">
           <li className="m-2"><strong>"Löpande text":</strong> Texten visas löpande på webbsidan med längre rader för en kontinuerlig läsupplevelse.</li>
@@ -30,29 +37,29 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
         </ul>
       </div>
 
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <h4 className="text-lg font-bold mb-2">3. Byt visningsläge:</h4>
         <p>Du kan också välja mellan två visningslägen:</p>
         <ul className="list-disc pl-6">
           <li className="m-2"><strong>"Punktskriftvy":</strong> Visar texten i punktskrift för användare utan syn eller med synnedsättning.</li>
           <li className="m-2"><strong>"Svartskriftvy":</strong> Visar texten i vanlig svart text på vit bakgrund för användare som föredrar det konventionella visningsläget.</li>
         </ul>
-      </div>
+      </div> */}
 
       <div className="mb-8">
         <h4 className="text-lg font-bold mb-2">4. Spara senaste läspositionen:</h4>
-        <p>För att spara den senaste läspositionen behöver du tillåta kakor och sedan ha automatisk sparning aktiverad. Den senaste läspositionen sparas automatiskt i kakor så fort sidan scrollas och visas automatiskt när du laddar upp samma bok igen.</p>
+        <p>För att spara den senaste läspositionen behöver du tillåta kakor. Den senaste läspositionen sparas automatiskt i kakor så fort sidan scrollas och visas automatiskt när du laddar upp samma bok igen.</p>
       </div>
 
       <div className="mb-8">
         <h4 className="text-lg font-bold mb-2">5. Navigera i boken:</h4>
-        <p>Det finns knappar nedanför bokens sidor för att navigera runt i boken. Beroende på vilket läge du använder kan du använda dem för att hoppa mellan sidor. Observera att om automatisk sparning är aktiverat och du navigerar till första sidan eller till en annan sida, sparas den nya sidan som senaste läsposition.</p>
+        <p>Beroende på vilket läge du använder kan du använda navigeringen för att hoppa mellan sidor. Observera att om automatisk sparning är aktiverat och du navigerar till första sidan eller till en annan sida, sparas den nya sidan som senaste läsposition.</p>
         {/* <p className="my-2">
           Själva applikationen är anpassad för att användas tillsammans med <strong>NVDA</strong> <em>(NonVisual Desktop Access)</em> men fungerar också utan.
         </p> */}
         <ul className="list-disc pl-6">
           <li className="my-2">
-            I läget "Löpande text" behöver du navigera till bokens titel med tabb och sedan vidare till den senaste sparade positionen markerad med en h3-rubrik. Därefter navigerar du med piltangenterna tills du har läst klart boken.
+            I läget "Löpande text" behöver du navigera till bokens titel med tabb och sedan tabba vidare till den senaste sparade positionen markerad med en h3-rubrik. Därefter navigerar du med piltangenterna tills du har läst klart boken.
           </li>
           <li className="my-2">
             I läget 'Sida för sida' navigerar du med tabb till bokens titel och sedan till h3-rubriken som markerar sidnumret. Fortsätt nedåt tills du når knappen för nästa sida och klicka på den. När du klickar på knappen för nästa sida kommer du automatiskt att förflyttas till nästa sidas h3-rubrik.          </li>
@@ -60,12 +67,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
 
       </div>
 
-      <div className="mb-8">
-        <h4 className="text-lg font-bold mb-2">6. Bokens grundläggande bibliografiska information:</h4>
-        <p className="my-2">
-          Nedanför navigationsknapparna finns en ruta som visar bokens grundläggande bibliografiska information som standard. När du laddar upp en bok, uppdateras informationen automatiskt och inkluderar bland annat beskrivning, utgivare, och datum.
-        </p>
-      </div>
+      
 
       <div className="mb-8">
         <p>
