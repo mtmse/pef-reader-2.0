@@ -3,7 +3,7 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    min-height: 100vh;
+    /* min-height: 100vh; */
     height: auto;
     /* max-width: 1080px; */
 }
