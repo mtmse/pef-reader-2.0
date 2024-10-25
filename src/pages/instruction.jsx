@@ -87,7 +87,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
             setCookiePermission(CookieEnum.ALLOWED);
             navigate('/');
           }}>
-            Godkänn kakor och ta mig till startsidan
+            Godkänn kakor och ta mig till uppladdningssidan
           </button>
         }
       </div>
