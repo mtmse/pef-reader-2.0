@@ -77,6 +77,14 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
         }
     }
 
+    useEffect(() => {
+        // Scrolla till elementet med ID "MainContentArea" när komponenten monteras
+        const mainContentElement = document.getElementById("MainContentArea");
+        if (mainContentElement) {
+            mainContentElement.scrollIntoView({ behavior: "smooth", block: "start" });
+            mainContentElement.focus();
+        }}, [])
+
     return (
         <div className="flex flex-col pt-10 px-20 w-full screen-view">
 
@@ -141,6 +149,7 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                     {fileName}</span>
             </div>
 
+            {pefObject &&
             <div className="mt-10">
                 <legend className="text-2xl font-bold mb-2">Information om din uppladdade pef</legend>
 
@@ -161,7 +170,7 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                 ) : (
                 <p>Ingen fil uppladdad. Välj fil att ladda upp.</p>
                 )}
-            </div>
+            </div>}
 
             <fieldset className="mt-10">
                 {pefObject && pefObject.metaData && pefObject.metaData.title 
