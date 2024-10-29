@@ -385,17 +385,18 @@ useEffect(() => {
           </div>
         }
 
-        {cookiePermission === CookieEnum.DENIED &&
-          <div className="bg-yellow-200 border border-yellow-300 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
-            <span tabIndex={0}>
-              Automatisk sparning är inte tillgänglig eftersom kakor är inaktiverade.
-            </span>
-          </div>
-        }
+       
  
 
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-100">
           <div id="pages-scrollable-element" className=" p-10 w-full flex flex-col m-auto ">
+          {cookiePermission === CookieEnum.DENIED &&
+          <div className="bg-yellow-200 border border-yellow-300 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
+            <span tabIndex={0}>
+              Läsposition kan inte sparas. Gå tillbaka till uppladdningssidan för att godkänna kakor.
+            </span>
+          </div>
+        }
             {renderPages()}
           </div>
         </div>
