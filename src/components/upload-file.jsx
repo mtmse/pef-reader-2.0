@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react"
 import { fileReader, checkIfPefFileType } from "../utils/fileReader"
-import { UnitModeEnum, FileLoadStatusEnum } from "../data/enums.js"
+import { UnitModeEnum, FileLoadStatusEnum, CookieEnum } from "../data/enums.js"
 import { useDropzone } from 'react-dropzone'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import brailleIcon from '../media/braille-icon.png';
 import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 
-export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
+export default function UploadFile({ cookiePermission, setCookiePermission, setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
     const [showDots, setShowDots] = useState(true);
 
@@ -85,6 +85,8 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
             mainContentElement.focus();
         }}, [])
 
+        // console.log(cookiePermission);
+
     return (
         <div className="flex flex-col pt-10 px-20 w-full screen-view">
 
@@ -100,7 +102,24 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                 <div className="mt-4 md:mt-6 lg:mt-8 px-4 md:px-8 lg:px-12 text-center md:text-left">
                     <p className="text-lg md:text-xl lg:text-2xl">När du har laddat ner en punktskriftsbok från Legimus kan du läsa den här med din punktdisplay.</p>
                 </div>
+
+                {cookiePermission === CookieEnum.DENIED &&
+                <> 
+                <div className="m-5">
+                    <p className="text-lg md:text-xl">Eftersom du inte har godkänt kakor kommer din läsposition inte att sparas. Vill du godkänna kakor och spara din läsposition?</p>
+                </div>
+                <button id="confirm-cookie" onClick={() => setCookiePermission(CookieEnum.ALLOWED)}
+                className="flex-none w-64 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out mr-2 w-4/5
+                bg-gradient-to-b from-emerald-400 to-emerald-700   
+                hover:from-emerald-600 hover:to-emerald-800
+                focus:from-emerald-600 focus:to-emerald-800">
+                Godkänn kakor
+            </button>
+            </>
+            }
             </div>
+
+            
 
             <div className="flex flex-col items-start my-10">
                 <h3 className="text-4xl font-bold my-5">Ladda upp filen</h3>
