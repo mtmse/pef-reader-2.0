@@ -3,7 +3,6 @@ import brailleTranslator from "../utils/translator/brailleTranslator.js";
 import { filterUnnecessarySentence } from "../utils/filterSetences.js"
 import { manipulatePageIndexToRemoveUnnecessaryPages } from "../utils/filterPages.js";
 import { FormatModeEnum, CookieEnum } from '../data/enums.js'
-import { metadataVariableTranslation } from '../data/metadataTranslator.js'
 import updateBrowserTabText from "../utils/updateBrowserTabText.js";
 
 export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, cookiePermission, setReadmode, pefObject }) {
@@ -28,7 +27,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     const pagesFromPefObject = [];
     let firstPageIndex;
     let pageIndex = 1;
-
+  
     const volumes = pefObject.bodyData.volumes;
     for (let i = 0; i < volumes.length; i++) {
       const volume = volumes[i];
@@ -43,28 +42,51 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               const page = sectionPages[k];
               const thisPageIndex = pageIndex;
               pageIndex++;
-
+ 
+              let pageRows = "";
+ 
+              // Bearbetar och ackumulerar texten för varje rad inom en sida
+              if (page && page.rows) {
+                page.rows.forEach((row, index) => {
+                  if (row != null) {
+                    let processedRow =
+                      bookView === FormatModeEnum.NORMAL_VIEW
+                        ? brailleTranslator(filterUnnecessarySentence(row))
+                        : filterUnnecessarySentence(row);
+ 
+ 
+                    if (processedRow != null) {
+                      // Kontrollera om raden ska inkluderas
+                      const lastChar = processedRow.charAt(
+                        processedRow.length - 1
+                      );
+                      if (lastChar !== "⠱" && lastChar !== ":") {
+                        pageRows += processedRow; // Lägg till raden som den är
+                      } else {
+                        pageRows += processedRow.slice(0, -1); // Ta bort sista tecknet om det är ⠱ eller :
+                      }
+                       // Ta bort bindestreck och mellanslag för att slå ihop avstavade ord
+                      pageRows = pageRows.replace(/-\s+/g, "");
+                      pageRows = pageRows.replace(/:/g, "");
+                    }
+                  }
+                });
+              }
+               // Skapa sid-elementet och använd den sammanslagna texten i pageRows
               const pageElement = page && page.rows && (
                 <div key={`${i}-${j}-${k}`}>
-                  <h3 id={`page-${thisPageIndex}`} 
-                  className="font-black" 
-                  tabIndex={0}
-                  ref={el => headingRefs.current[thisPageIndex] = el}>
+                  <h3
+                    id={`page-${thisPageIndex}`}
+                    className="font-black"
+                    tabIndex={0}
+                    ref={(el) => (headingRefs.current[thisPageIndex] = el)}
+                  >
                     Sida {thisPageIndex}
                   </h3>
-                  {page.rows.map((row, l) => (
-                    <div key={`${i}-${j}-${k}-${l}`}>
-                      <span>
-                        {bookView === FormatModeEnum.NORMAL_VIEW
-                          ? brailleTranslator(filterUnnecessarySentence(row))
-                          : filterUnnecessarySentence(row)}
-                      </span>
-                    </div>
-                  ))}
+                  <div>{pageRows}</div>
                 </div>
               );
-
-              if (!firstPageIndex && pageElement) {
+               if (!firstPageIndex && pageElement) {
                 firstPageIndex = thisPageIndex;
                 pagesFromPefObject[thisPageIndex] = pageElement;
               } else if (pageElement) {
@@ -77,7 +99,6 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
         }
       }
     }
-
     setPages(pagesFromPefObject);
     setFirstPageIndex(firstPageIndex);
     setMaxPageIndex(pageIndex - 1);
@@ -145,8 +166,9 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
 
   return (
     <div className="flex flex-col pt-5 px-10 w-full screen-view">
+      <div className="full-height">
       <button onClick={() => setReadmode(false)} className="button mb-1">
-        Tillbaka till startsida
+        Tillbaka till uppladdningssida
       </button>
 
       {/* {cookiePermission === CookieEnum.ALLOWED && (
@@ -221,12 +243,12 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Föregående sida
               </button>
-              <button onClick={() => handleSetCurrentPage(firstPageIndex)} className="h-full w-full px-2
+              {/* <button onClick={() => handleSetCurrentPage(firstPageIndex)} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Förstasidan
-              </button>
+              </button> */}
             </div>
 
             <div className="flex flex-row flex-nowrap items-center w-full h-32 overflow-hidden rounded-b">
@@ -299,28 +321,8 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     </div>
   </div>
 
-        <div className="flex flex-col bg-neutral-50 rounded my-20 pt-5 pb-20 px-10 w-full border shadow">
-          <h3 className="font-bold text-lg mb-3" tabIndex={0}>Grundläggande bibliografisk information</h3>
-
-          {/* Render metadata labels */}
-          {pefObject.metaData && pefObject.metaData.language &&
-            Object.entries(pefObject.metaData)
-              .map(([key, value]) => {
-                return value && metadataVariableTranslation(key, pefObject.metaData.language) && (
-                  <label key={key}>
-                    <strong>{metadataVariableTranslation(key, pefObject.metaData.language)}:</strong> {value}
-                  </label>
-                );
-              })
-          }
-
-          {/* Render number of pages in the application */}
-          {maxPageIndex &&
-            <label>
-              <strong>Antal sidor i applikationen:</strong> {maxPageIndex}
-            </label>
-          }
-        </div>
+      
+      </div>
       </div>
     </div >
   );
