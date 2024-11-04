@@ -25,6 +25,9 @@ html {
 
 }
 
+.full-height {
+    min-height: 100vh;
+}
 /* Font size adjustments for different screen sizes */
 
 /* Increase font size for smaller phones (min-width: 200px) */
