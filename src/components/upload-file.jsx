@@ -7,7 +7,7 @@ import { faFile } from '@fortawesome/free-regular-svg-icons';
 import brailleIcon from '../media/braille-icon.png';
 import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 
-export default function UploadFile({ cookiePermission, setCookiePermission, setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
+export default function UploadFile({ cookiePermission, setCookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
     const [showDots, setShowDots] = useState(true);
 
@@ -224,6 +224,9 @@ export default function UploadFile({ cookiePermission, setCookiePermission, setS
                     </label>
                 </div>
             </fieldset>
+
+            {savedPageIndex && <p className="mt-1">Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}</p>}
+
 
             <div className="mt-2 mb-10">
                 {(fileLoadStatus === FileLoadStatusEnum.INITIAL || fileLoadStatus === FileLoadStatusEnum.SUCCESSFUL) && (
