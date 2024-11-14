@@ -57,6 +57,7 @@ export default function MainPage({ cookiePermission, setCookiePermission }) {
         howToRead={howToRead}
         setHowToRead={setHowToRead}
         setSavedPageIndex={setSavedPageIndex}
+        savedPageIndex={savedPageIndex}
       />
     ) : (
       <>
