@@ -271,7 +271,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                       bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
                       hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
                       focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                      Gå till
+                      Gå till sida
                     </button>
                   </div>
                 </div>
