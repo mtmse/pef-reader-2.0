@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import CookieBanner from "../components/cookie-banner";
 
 export default function Navbar({ showCookieBanner, setCookiePermission }) {
+  const navigate = useNavigate();
   return (
     <header>
       <div>
@@ -12,7 +14,7 @@ export default function Navbar({ showCookieBanner, setCookiePermission }) {
           Till huvudinnehåll
         </button>
         <button
-          onClick={() => window.location.href = '/instruktion'}
+          onClick={() => navigate('/instruktion')}
           className="sr-only focus:not-sr-only focus:bg-black focus:text-white"
           tabIndex={0}
         >
