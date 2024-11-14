@@ -17,6 +17,8 @@ export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSave
  
   updateBrowserTabText(pefObject.metaData.title)
 
+  console.log("Savedpagedindex is", savedPageIndex);
+
   useEffect(() => {
     if (savedPageIndex === null && startPageIndex !== undefined) {
       setSavedPageIndex(startPageIndex);
@@ -108,28 +110,6 @@ useEffect(() => {
     };
   }
 }, [autoSave, setSavedPageIndex]);
-
-
-  function handleScrollToPageIndex(index) {
-    const pageId = `page-${index}`
-    const element = document.getElementById(pageId)
-
-    if (element) {
-      setSavedPageIndex(index)
-
-      if (document.activeElement !== element) {
-        element.tabIndex = 0
-        element.focus();
-        console.log("Sätter fokus på från att ha angett sidnummer", element);
-
-      }
-
-      element.scrollIntoView({ behavior: "smooth", block: "center" });
-
-    } else {
-      alert(`Sidan '${index}' kunde inte hittas.`);
-    }
-  }
 
   const renderPages = () => {
     // Object to store all JSX elements
@@ -249,43 +229,33 @@ useEffect(() => {
     return percentageBlank >= 50; // Return true if 50% or more of the row is blank
   }
 
+  console.log("Active element är innan", document.activeElement);
+
+  function handleScrollToPageIndex(index) {
+    const pageId = `page-${index}`;
+    const element = document.getElementById(pageId);
+
+    if (element) {
+        setSavedPageIndex(index);
+
+        // Rulla till rätt sida först
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+
+       
+      if (document.activeElement !== element) {
+          element.tabIndex = 0;
+          element.focus();
+          console.log("Sätter fokus på sidan", element);
+          console.log("Active element är efter", document.activeElement);
+
+      }
+      
+    } else {
+        alert(`Sidan '${index}' kunde inte hittas.`);
+    }
+}
+
   return (
-    // <div className="flex flex-col pt-5 px-10 w-full">
-    //   <button onClick={() => setReadmode(false)} className="button mb-5">
-    //     Tillbaka till startsida
-    //   </button>
-
-    //   {cookiePermission === CookieEnum.ALLOWED && (
-    //     <div className={`mt-3 px-5 py-3 border w-64 rounded shadow text-white border	
-    //     ${autoSave ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-500 border-emerald-600"
-    //         : "bg-gradient-to-br from-red-500 via-red-600 to-red-500 border-red-600"}`}>
-
-    //       <fieldset>
-    //         <legend className="font-bold mb-1">Automatisk sparning</legend>
-    //         <div className="flex justify-start items-center">
-    //           <input type="radio"
-    //             id="autosave-radio-on"
-    //             name="autosave"
-    //             className="m-1"
-    //             checked={autoSave === true}
-    //             onChange={() => setAutoSave(true)}
-    //           />
-    //           <label htmlFor="autosave-radio-on">Aktivera sparning</label>
-    //         </div>
-
-    //         <div className="flex justify-start items-center">
-    //           <input type="radio"
-    //             id="autosave-radio-off"
-    //             name="autosave"
-    //             className="m-1"
-    //             checked={autoSave === false}
-    //             onChange={() => setAutoSave(false)}
-    //           />
-    //           <label htmlFor="autosave-radio-off">Inaktivera sparning</label>
-    //         </div>
-    //       </fieldset>
-    //     </div>
-    //   )} mt-20 //nedan
     <>
     { /* navigator buttons */}
           <div className="h-auto border-neutral-400 text-md w-full border
@@ -300,13 +270,12 @@ useEffect(() => {
               <div className="h-10 sm:h-full w-full sm:w-1/3 border-b border-black sm:border-none">
                 <button onClick={() => {
                   setReadmode(false)
-                  // handleScrollToPageIndex(startPageIndex)
 
                 }} className="h-full w-full px-2 sm:h-full
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                  {/* Förstasidan */}
+                  {/* Uppladdning */}
                   Gå tillbaka till uppladdning
                 </button>
               </div>
