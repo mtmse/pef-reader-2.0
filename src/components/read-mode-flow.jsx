@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import _ from 'lodash';
-import updateBrowserTabText from "../utils/updateBrowserTabText.js";
 import brailleTranslator from "../utils/translator/brailleTranslator.js";
 import { filterUnnecessarySentence } from "../utils/filterSetences.js";
 import { manipulatePageIndexToRemoveUnnecessaryPages } from "../utils/filterPages.js";
