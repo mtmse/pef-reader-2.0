@@ -326,5 +326,5 @@ export default function ReadModeTestPage({
         </div>
       </div>
     </>
-  ); 
+  );
 }
