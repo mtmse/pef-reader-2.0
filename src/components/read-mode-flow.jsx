@@ -1,329 +1,337 @@
-import { useEffect, useState, useCallback } from "react";
-import _ from 'lodash';
+import { useEffect, useState } from "react";
 import brailleTranslator from "../utils/translator/brailleTranslator.js";
-import { filterUnnecessarySentence } from "../utils/filterSetences.js";
+import { filterUnnecessarySentence } from "../utils/filterSetences.js"
 import { manipulatePageIndexToRemoveUnnecessaryPages } from "../utils/filterPages.js";
 import { FormatModeEnum, CookieEnum } from "../data/enums.js";
 
-export default function ReadModeTestPage({ 
-  cookiePermission, 
-  savedPageIndex, 
-  setSavedPageIndex, 
-  setReadmode, 
-  pefObject 
-}) {
-  const [hasScrolled, setHasScrolled] = useState(false);
-  const [isFocusing, setIsFocusing] = useState(false);
-  const [pageIndices, setPageIndices] = useState({
-    maxIndex: null,
-    startIndex: null
-  });
-  const bookView = FormatModeEnum.NORMAL_VIEW;
-  const autoSave = true;
 
-  // Uppdatera browser tab text när komponenten mountas
-  useEffect(() => {
-    document.title = pefObject.metaData.title;
-  }, [pefObject.metaData.title]);
+export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject }) {
+  const [hasScrolled, setHasScrolled] = useState(false)
+  let autoSave = true;
+  let maxPageIndex
+  let startPageIndex
+  let bookView = FormatModeEnum.NORMAL_VIEW
+ 
 
-  // Hantera initial sidposition
-  useEffect(() => {
-    if (savedPageIndex === null && pageIndices.startIndex !== null) {
-      setSavedPageIndex(pageIndices.startIndex);
-    }
-  }, [savedPageIndex, pageIndices.startIndex, setSavedPageIndex]);
+  console.log("Savedpagedindex is", savedPageIndex);
 
-  // Fokusera på rätt sida
-  const focusOnPage = useCallback(async (index) => {
-    setIsFocusing(true);
-    const pageId = `page-${index}`;
+  function navigateToPage(pageIndex) {
+    const pageId = `page-${pageIndex}`;
     const element = document.getElementById(pageId);
-
+  
     if (element) {
-      // Scrolla först med instant för att undvika timing-problem
-      element.scrollIntoView({ behavior: "instant", block: "center" });
-      
-      // Kort fördröjning för att säkerställa att DOM har uppdaterats
-      await new Promise(resolve => setTimeout(resolve, 50));
-      
-      // Sätt fokus och uppdatera tillstånd
-      element.setAttribute('tabindex', '0');
-      element.focus();
-      
-      // Uppdatera övriga sidors tabindex
-      document.querySelectorAll('[id^="page-"]').forEach(page => {
-        if (page.id !== pageId) {
-          page.setAttribute('tabindex', '-1');
-        }
-      });
-
-      setHasScrolled(true);
+      setSavedPageIndex(pageIndex);
+  
+      const handleScrollEnd = () => {
+        element.focus();
+        setHasScrolled(true);
+        console.log("Fokus satt på:", element);
+        // Ta bort lyssnaren efter att den körts
+        window.removeEventListener('scrollend', handleScrollEnd);
+      };
+  
+      // Lägg till en lyssnare för scrollend event
+      window.addEventListener('scrollend', handleScrollEnd);
+  
+      // Starta scrollningen
+      element.scrollIntoView({ behavior: 'smooth', block: "center" });
+    } else {
+      console.error(`Kunde inte hitta sidan ${pageIndex}`);
     }
-    
-    // Återställ focusing-flaggan efter en kort fördröjning
-    setTimeout(() => setIsFocusing(false), 100);
-  }, []);
+  }
 
   useEffect(() => {
     if (!hasScrolled && savedPageIndex !== null) {
-      focusOnPage(savedPageIndex);
+      navigateToPage(savedPageIndex);
     }
-  }, [savedPageIndex, hasScrolled, focusOnPage]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [savedPageIndex, hasScrolled]);
 
-  // Hantera automatisk sparning av position vid scrollning
-  useEffect(() => {
-    if (autoSave && !isFocusing) {
-      const handleScroll = _.throttle(() => {
-        const pages = document.querySelectorAll("[id^='page-']");
-        let currentPage = null;
 
-        pages.forEach(page => {
-          const rect = page.getBoundingClientRect();
-          const middleOfViewport = window.innerHeight / 2;
-          
-          if (rect.top <= middleOfViewport && rect.bottom >= middleOfViewport) {
-            currentPage = parseInt(page.id.replace("page-", ""), 10);
-          }
-        });
-
-        if (currentPage && currentPage !== savedPageIndex) {
-          setSavedPageIndex(currentPage);
-        }
-      }, 100);
-
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
+// Hantera scroll till sparad position
+useEffect(() => {
+  if (savedPageIndex !== null && !hasScrolled) {
+    const pageId = `page-${savedPageIndex}`;
+    const element = document.getElementById(pageId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: "nearest" });
+      element.focus();
+      setHasScrolled(true);
     }
-  }, [autoSave, setSavedPageIndex, isFocusing, savedPageIndex]);
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [savedPageIndex]);
 
-  // Funktion för att kontrollera om en rad mestadels består av blanktecken
-  const isRowMostlyBlank = useCallback((row) => {
-    const blankCharCount = ((row.match(/⣿/g) || []).length) + ((row.match(/ /g) || []).length);
-    const percentageBlank = (blankCharCount / row.length) * 100;
-    return percentageBlank >= 50;
-  }, []);
+// Autosave vid scroll
+useEffect(() => {
+  if (autoSave && hasScrolled) { // Lägg till hasScrolled check
+    const handleScroll = () => {
+      // Lägg till en debounce här för att minska antalet uppdateringar
+      const pages = document.querySelectorAll("[id^='page-']");
+      let lastVisiblePageIndex = null;
 
-  // Funktion för att hantera navigation till specifik sida
-  const handleScrollToPageIndex = useCallback((index) => {
-    if (index >= pageIndices.startIndex && index <= pageIndices.maxIndex) {
-      setSavedPageIndex(index);
-      focusOnPage(index);
-    } else {
-      alert(`Ogiltigt sidnummer. Ange ett nummer mellan ${pageIndices.startIndex} och ${pageIndices.maxIndex}.`);
-    }
-  }, [pageIndices, setSavedPageIndex, focusOnPage]);
-
-  // Funktion för att bearbeta sidinnehåll
-  const processPageContent = useCallback((page) => {
-    let pageContent = '';
-    
-    if (page && page.rows) {
-      page.rows.forEach((row, index) => {
-        if (!row) return;
-
-        const processedRow = bookView === FormatModeEnum.NORMAL_VIEW
-          ? brailleTranslator(filterUnnecessarySentence(row))
-          : filterUnnecessarySentence(row);
-
-        if (!processedRow) return;
-        if (index === 0 && isRowMostlyBlank(processedRow)) return;
-
-        const lastChar = processedRow.charAt(processedRow.length - 1);
-        if (lastChar === '⠱' || lastChar === ':') {
-          pageContent += processedRow.slice(0, -1);
-        } else {
-          pageContent += processedRow;
+      pages.forEach(page => {
+        const rect = page.getBoundingClientRect();
+        if (rect.top <= window.innerHeight && rect.bottom >= 0) {
+          lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10) - 2;
         }
       });
-    }
 
-    // Ta bort bindestreck och mellanslag för att slå ihop avstavade ord
-    return pageContent.replace(/-\s+/g, '').replace(/:/g, '');
-  }, [bookView, isRowMostlyBlank]);
+      if (lastVisiblePageIndex) {
+        setSavedPageIndex(lastVisiblePageIndex);
+      }
+    };
 
-  // Beräkna sidor och uppdatera indices en gång när komponenten mountas
-  useEffect(() => {
-    let firstPageIndex = null;
-    let lastPageIndex = 1;
-    
-    // Räkna genom sidorna för att hitta första och sista index
-    pefObject.bodyData.volumes.forEach((volume) => {
-      if (!volume.sections) return;
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }
+  		// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [autoSave, hasScrolled]);
 
-      volume.sections.forEach((section) => {
-        if (!section.pages) return;
-
-        section.pages.forEach((page, k) => {
-          k = manipulatePageIndexToRemoveUnnecessaryPages(section.pages, k);
-          
-          if (page && page.rows && page.rows.some(row => row)) {
-            if (firstPageIndex === null) {
-              firstPageIndex = lastPageIndex;
-            }
-            lastPageIndex++;
-          }
-        });
-      });
-    });
-
-    setPageIndices({
-      startIndex: firstPageIndex,
-      maxIndex: lastPageIndex - 1
-    });
-  }, [pefObject]);
-
-  // Funktion för att rendera alla sidor
-  const renderPages = useCallback(() => {
+  const renderPages = () => {
+    // Object to store all JSX elements
     const pagesFromPefObject = [];
+    // Variable to store index of the first page
+    let firstPageIndex;
+    // Variable to track current page index
     let pageIndex = 1;
 
-    pefObject.bodyData.volumes.forEach((volume, i) => {
-      if (!volume.sections) return;
+    const volumes = pefObject.bodyData.volumes;
+    for (let i = 0; i < volumes.length; i++) {
+      const volume = volumes[i];
+      if (volume.sections) {
+        const sections = volume.sections;
+        for (let j = 0; j < sections.length; j++) {
+          const section = sections[j];
+          if (section.pages) {
+            const sectionPages = section.pages;
+            for (let k = 0; k < sectionPages.length; k++) {
 
-      volume.sections.forEach((section, j) => {
-        if (!section.pages) return;
+              // Apply manipulation to page index if necessary
+              k = manipulatePageIndexToRemoveUnnecessaryPages(sectionPages, k);
+              const page = sectionPages[k]
+              const thisPageIndex = pageIndex
+              pageIndex++;
 
-        section.pages.forEach((page, k) => {
-          k = manipulatePageIndexToRemoveUnnecessaryPages(section.pages, k);
-          const thisPageIndex = pageIndex;
-          
-          const pageContent = processPageContent(page);
-          
-          if (pageContent) {
-            const pageElement = (
-              <div 
-                key={`${i}-${j}-${k}`}
-                id={`page-${thisPageIndex}`}
-                role="region"
-                aria-label={`Sida ${thisPageIndex}`}
-                className="page-container"
-              >
-                <h3
-                  className="font-black mt-2"
-                  tabIndex={thisPageIndex === savedPageIndex ? 0 : -1}
-                >
-                  Sida {thisPageIndex}
-                </h3>
-                <div className="page-content">{pageContent}</div>
-              </div>
-            );
-            
-            pagesFromPefObject.push(pageElement);
-            pageIndex++;
+              let pageRows = '';
+
+              // Accumulate the processed text from each row into pageRows
+              if (page && page.rows) {
+                page.rows.forEach((row, index) => {
+                  if (row != null) { // Check if row is not null or undefined
+                    const processedRow = bookView === FormatModeEnum.NORMAL_VIEW
+                      ? brailleTranslator(filterUnnecessarySentence(row))
+                      : filterUnnecessarySentence(row);
+
+                    if (processedRow != null) { // Check if processedRow is not null or undefined
+                      // Check if it's the first row and if it contains 75% or more blank characters
+                      if (index === 0 && isRowMostlyBlank(processedRow)) {
+                        // Skip the first row
+                        return;
+                      }
+
+                     
+
+                      // Check if the last character of the processedRow is not ⠱
+                      const lastChar = processedRow.charAt(processedRow.length - 1);
+
+                      if (lastChar !== '⠱' && lastChar !== ":") {
+                      // Append the processedRow to pageRows
+                      pageRows += processedRow;
+                      } 
+                      else {
+                      // If the last character is ⠱, remove it
+                        pageRows += processedRow.slice(0, -1);
+                      }  
+                      //Ta bort bindestreck och mellanslag för att slå ihop avstavade ord
+                       pageRows = pageRows.replace(/-\s+/g, '');
+                       pageRows = pageRows.replace(/:/g, '');
+
+                       //Ta bort flera punkter i rad när det kommer till innehållsförteckning
+                       pageRows = pageRows.replace(/\.{3,}/g, ' ');
+
+                   
+                    }
+                  }
+                });
+              }
+
+              // Create the page element, incorporating the accumulated text in pageRows
+              const pageElement = page && page.rows && (
+                <div key={`${i}-${j}-${k}`}>
+                  <h3
+                    id={`page-${thisPageIndex}`}
+                    className="font-black mt-2"
+                    tabIndex={thisPageIndex === savedPageIndex ? 0 : null}
+                    onFocus={() => {
+                      // Scroll the h3 element into view
+                      const h3Element = document.getElementById(`page-${thisPageIndex}`);
+                      if (h3Element) {
+                        h3Element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }}}
+                    >
+                    Sida {thisPageIndex}
+                  </h3>
+                  <div>{pageRows}</div>
+                  
+                </div>
+              );
+
+              // Save the page element if it's the first page index and there's a page element
+              if (!firstPageIndex && pageElement) {
+                firstPageIndex = thisPageIndex
+                pagesFromPefObject.push(pageElement);
+              }
+              // Save the page element if there's a page element
+              else if (pageElement) {
+                pagesFromPefObject.push(pageElement);
+              }
+              // Move the page index back one page if the page element is empty
+              else {
+                // Use the following line for debugging to log which page index is missing
+                // console.error("Page index undefined:", thisPageIndex, "Page element:", pageElement);
+                pageIndex--;
+              }
+            }
           }
-        });
-      });
-    });
+        }
+      }
+    }
 
-    return pagesFromPefObject;
-  }, [pefObject, processPageContent, savedPageIndex]);
+    startPageIndex = firstPageIndex
+    maxPageIndex = pageIndex - 1
 
+    return pagesFromPefObject
+  };
+
+  function isRowMostlyBlank(row) {
+    const blankCharCount = ((row.match(/⣿/g) || []).length) + ((row.match(/ /g) || []).length); // Count the occurrences of blank character
+    const percentageBlank = (blankCharCount / row.length) * 100;
+    return percentageBlank >= 50; // Return true if 50% or more of the row is blank
+  }
+
+  console.log("Active element är innan", document.activeElement);
+
+  function handleScrollToPageIndex(index) {
+    navigateToPage(index);
+  }
+  
   return (
     <>
-      {/* Header med metadata och navigation */}
-      <div className="h-auto border-neutral-400 text-md w-full border sticky top-0 z-10">
-        <div className="flex flex-col sm:flex-row items-center h-full sm:h-20 w-full overflow-hidden rounded-b">
-          {/* Metadata */}
-          <div className="flex flex-col pt-2 ps-5 h-full w-full items-center justify-center flex-grow 
-                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2 border-neutral-200">
-            <h2 tabIndex={0}>
-              <strong>Titel: </strong> {pefObject.metaData.title}
-            </h2>
-            <h2 tabIndex={0}>
-              <strong>Författare:</strong> {pefObject.metaData.author}
-            </h2>
-          </div>
+    { /* navigator buttons */}
+          <div className="h-auto border-neutral-400 text-md w-full border
+          sticky top-0 z-10">
+            
+            <div className="flex flex-col sm:flex-row items-center h-full sm:h-20 w-full overflow-hidden rounded-b">
+            <div className="flex flex-col pt-2 ps-5 h-full w-full items-center justify-center flex-grow 
+                  bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2 border-neutral-200">
+                  <h2 tabIndex={0}><strong>Titel: </strong> {pefObject.metaData.title}</h2>
+                  <h2 tabIndex={0}><strong>Författare:</strong> {pefObject.metaData.author}</h2>
+                </div>
+              <div className="h-10 sm:h-full w-full sm:w-1/3 border-b border-black sm:border-none">
+                <button onClick={() => {
+                  setReadmode(false)
 
-          {/* Tillbaka-knapp */}
-          <div className="h-10 sm:h-full w-full sm:w-1/3 border-b border-black sm:border-none">
-            <button 
-              onClick={() => setReadmode(false)}
-              className="h-full w-full px-2 sm:h-full
-                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
-                hover:from-emerald-400 hover:to-emerald-700 hover:text-white
-                focus:from-emerald-400 focus:to-emerald-700 focus:text-white"
-              aria-label="Gå tillbaka till uppladdning"
-            >
-              Gå tillbaka till uppladdning
-            </button>
-          </div>
-
-          {/* Sidnavigation */}
-          <div className="flex flex-row flex-nowrap items-center h-32 sm:h-full w-full overflow-hidden rounded-b sm:rounded-none">
-            <form 
-              onSubmit={(e) => {
-                e.preventDefault();
-                const pageNumber = parseInt(e.target.elements.goToPage.value, 10);
-                handleScrollToPageIndex(pageNumber);
-              }}
-              className="flex flex-row h-full w-full items-center justify-center flex-grow 
+                }} className="h-full w-full px-2 sm:h-full
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
+              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
+              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
+                  {/* Uppladdning */}
+                  Gå tillbaka till uppladdning
+                </button>
+              </div>
+             
+              <div className="flex flex-row flex-nowrap items-center h-32 sm:h-full w-full  overflow-hidden rounded-b sm:rounded-none">
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const pageNumber = parseInt(e.target.elements.goToPage.value, 10);
+                  
+                  handleScrollToPageIndex(pageNumber);
+                }}
+                  className="flex flex-row h-full w-full items-center justify-center flex-grow 
                 bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2 border-neutral-200"
-            >
-              <div className="flex flex-col">
-                <label htmlFor="goToPage" className="w-full font-medium mb-1">
-                  Ange ett sidnummer:
-                </label>
-                <div className="flex flex-row w-full">
-                  <input 
-                    className="border-y border border-neutral-400 w-full max-w-56"
-                    id="goToPage"
-                    type="number"
-                    min={pageIndices.startIndex}
-                    max={pageIndices.maxIndex}
-                    required
-                    aria-label={`Ange sidnummer mellan ${pageIndices.startIndex} och ${pageIndices.maxIndex}`}
-                  />
-                  <button 
-                    type="submit"
-                    className="px-2 mx-1 h-full w-1/2 min-w-16 max-w-32 border border-gray-400 
+                >
+                  <div className="flex flex-col">
+                    <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: </label>
+                    <div className="flex flex-row w-full">
+
+                      <input className="border-y border border-neutral-400 w-full max-w-56" id="goToPage" type="number" min={startPageIndex} max={maxPageIndex} required />
+                      <button type="submit" className="px-2 mx-1 h-full w-1/2 min-w-16 max-w-32 border border-gray-400 
                       bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
                       hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
-                      focus:from-emerald-400 focus:to-emerald-700 focus:text-white"
-                  >
-                    Gå till sida
-                  </button>
+                      focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
+                        Gå till sida
+                      </button>
+                    </div>
+                  </div>
+                </form>
                 </div>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
-      </div>
+                
+                {/* Inte välja vy öht */}
+                {/* <div className="p-1 flex flex-col justify-center items-center h-full w-60 
+                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200">
+                  <fieldset>
+                    <legend className="font-medium mb-px">Växla vy</legend>
+                    <div className="flex flex-row justify-start align-center">
+                      <input type="radio"
+                        id="normal-view"
+                        className="m-1"
+                        checked={bookView === FormatModeEnum.NORMAL_VIEW}
+                        onChange={() => setBookView(FormatModeEnum.NORMAL_VIEW)}
+                      />
+                      <label htmlFor="normal-view">Svartskriftvy</label>
+                    </div>
+                    <div className="flex flex-row justify-start align-center">
+                      <input type="radio"
+                        id="braille-view"
+                        className="m-1"
+                        checked={bookView === FormatModeEnum.BRAILLE_VIEW}
+                        onChange={() => setBookView(FormatModeEnum.BRAILLE_VIEW)}
+                      />
+                      <label htmlFor="braille-view">Punktskriftvy</label>
+                    </div>
+                   </fieldset>
+                </div> */}
+             
+        {/* only for debug */ /*
+          <div className={`px-5 bg-yellow-500`}>
+            Debug mode: savedPageIndex = {savedPageIndex}
+          </div> */
+        }
 
-      {/* Huvudinnehåll */}
+        {/*          from div 275   // className="w-full flex flex-col m-auto overflow-y-auto  overflow-hidden"
+ */}
+
       <div className="flex flex-col justify-center items-center screen-view">
-        {/* Cookie-varning */}
-        {!autoSave && cookiePermission === CookieEnum.ALLOWED && (
-          <div 
-            className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center"
-            role="alert"
-          >
+        {/* {pefObject.metaData.title && <h2 id="exit-from-scrollable-element" className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
+        {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>} */}
+
+        {!autoSave && cookiePermission === CookieEnum.ALLOWED &&
+          <div className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
             <span tabIndex={0}>
               Om du aktiverar automatisk sparning, kommer din position att sparas varje gång du scrollar förbi en sida.
             </span>
           </div>
-        )}
+        }
 
-        {/* Sidinnehåll */}
+       
+ 
+
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-100">
-          <div 
-            id="pages-scrollable-element"
-            className="p-10 w-full flex flex-col m-auto"
-            role="main"
-          >
-            {cookiePermission === CookieEnum.DENIED && (
-              <div 
-                className="bg-yellow-200 border border-yellow-300 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center"
-                role="alert"
-              >
-                <span tabIndex={0}>
-                  Läsposition kan inte sparas. Gå tillbaka till uppladdningssidan för att godkänna kakor.
-                </span>
-              </div>
-            )}
+          <div id="pages-scrollable-element" className=" p-10 w-full flex flex-col m-auto" aria-label="Digital punktläsare">
+          {cookiePermission === CookieEnum.DENIED &&
+          <div className="bg-yellow-200 border border-yellow-300 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
+            <span tabIndex={0}>
+              Läsposition kan inte sparas. Gå tillbaka till uppladdningssidan för att godkänna kakor.
+            </span>
+          </div>
+        }
             {renderPages()}
           </div>
-        </div>
+        </div>   
       </div>
-    </>
-  ); 
+      </>
+  )
 }
