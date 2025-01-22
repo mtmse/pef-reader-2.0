@@ -6,10 +6,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import brailleIcon from '../media/braille-icon.png';
 import { metadataVariableTranslation } from "../data/metadataTranslator.js";
+import updateBrowserTabText from "../utils/updateBrowserTabText.js";
 
 export default function UploadFile({ cookiePermission, setCookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
     const [showDots, setShowDots] = useState(true);
+
+    updateBrowserTabText(pefObject?.metaData?.title || "Digital punktläsare")
 
     // Setup dropzone
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -77,13 +80,13 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
         }
     }
 
-    useEffect(() => {
-        // Scrolla till elementet med ID "MainContentArea" när komponenten monteras
-        const mainContentElement = document.getElementById("MainContentArea");
-        if (mainContentElement) {
-            mainContentElement.scrollIntoView({ behavior: "smooth", block: "start" });
-            mainContentElement.focus();
-        }}, [])
+    // useEffect(() => {
+    //     // Scrolla till elementet med ID "MainContentArea" när komponenten monteras
+    //     const mainContentElement = document.getElementById("MainContentArea");
+    //     if (mainContentElement) {
+    //         mainContentElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    //         mainContentElement.focus();
+    //     }}, [])
 
         // console.log(cookiePermission);
 
@@ -168,7 +171,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                     {fileName}</span>
             </div>
 
-            {pefObject &&
+            <fieldset>{pefObject &&
             <div className="mt-10">
                 <legend className="text-2xl font-bold mb-2">Information om din uppladdade pef</legend>
 
@@ -190,8 +193,9 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 <p>Ingen fil uppladdad. Välj fil att ladda upp.</p>
                 )}
             </div>}
+            </fieldset>
 
-            <fieldset className="mt-10">
+            {/* <fieldset className="mt-10">
                 {pefObject && pefObject.metaData && pefObject.metaData.title 
                 ? <legend className="text-2xl font-bold" >Hur vill du läsa boken {pefObject.metaData.title}? 
                 </legend>
@@ -223,14 +227,20 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                         Sida för sida
                     </label>
                 </div>
-            </fieldset>
+            </fieldset> */}     
 
             {savedPageIndex && <p className="mt-1">Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}</p>}
 
 
             <div className="mt-2 mb-10">
                 {(fileLoadStatus === FileLoadStatusEnum.INITIAL || fileLoadStatus === FileLoadStatusEnum.SUCCESSFUL) && (
-                    <button onClick={HandleSwapToReadMode} className="button" >Läs boken</button>
+                    <button
+                    onClick={() => {
+                      HandleSwapToReadMode();
+                      setHowToRead(UnitModeEnum.PAGE_BY_PAGE);
+                    }}
+                    className="button"
+                  >Läs boken</button>
                 )}
 
                 {fileLoadStatus === FileLoadStatusEnum.FAILED && (
