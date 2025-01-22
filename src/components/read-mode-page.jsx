@@ -10,24 +10,41 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   const [maxPageIndex, setMaxPageIndex] = useState(0);
   const [firstPageIndex, setFirstPageIndex] = useState(0)
   const [currentPageIndex, setCurrentPageIndex] = useState(null)
-  // const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
-  // const [autoSave, setAutoSave] = useState(true)
-  const headingRefs = useRef({}); // Store references to the page headings
+  const contentRefs = useRef({}); // Store references to the page content
   let autoSave = true;
   let bookView = FormatModeEnum.NORMAL_VIEW
-  // const [selectedView, setSelectedView] = useState(bookView); // Temporär vy
-
-  // const handleConfirm = () => {
-  //   setBookView(selectedView); // Uppdatera när knappen trycks
-  // };
 
   updateBrowserTabText(pefObject.metaData.title);
+
+  function isRowMostlyBlank(row) {
+    const blankCharCount = ((row.match(/⣿/g) || []).length) + ((row.match(/ /g) || []).length);
+    const percentageBlank = (blankCharCount / row.length) * 100;
+    return percentageBlank >= 50;
+  }
+
+  // Function to wrap the first word in a span with a ref
+  const wrapFirstWord = (text, pageIndex) => {
+    const words = text.split(/\s+/);
+    if (words.length === 0) return text;
+    
+    return (
+      <>
+        <span
+          ref={el => contentRefs.current[pageIndex] = el}
+          tabIndex={0}
+        >
+          {words[0]}
+        </span>
+        {' ' + words.slice(1).join(' ')}
+      </>
+    );
+  };
 
   const renderPagesFromPefObject = useCallback(() => {
     const pagesFromPefObject = [];
     let firstPageIndex;
     let pageIndex = 1;
-  
+
     const volumes = pefObject.bodyData.volumes;
     for (let i = 0; i < volumes.length; i++) {
       const volume = volumes[i];
@@ -45,7 +62,6 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
  
               let pageRows = "";
  
-              // Bearbetar och ackumulerar texten för varje rad inom en sida
               if (page && page.rows) {
                 page.rows.forEach((row, index) => {
                   if (row != null) {
@@ -54,39 +70,41 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                         ? brailleTranslator(filterUnnecessarySentence(row))
                         : filterUnnecessarySentence(row);
  
- 
                     if (processedRow != null) {
-                      // Kontrollera om raden ska inkluderas
+                      if (index === 0 && isRowMostlyBlank(processedRow)) {
+                        return;
+                      }
                       const lastChar = processedRow.charAt(
                         processedRow.length - 1
                       );
                       if (lastChar !== "⠱" && lastChar !== ":") {
-                        pageRows += processedRow; // Lägg till raden som den är
+                        pageRows += processedRow;
                       } else {
-                        pageRows += processedRow.slice(0, -1); // Ta bort sista tecknet om det är ⠱ eller :
+                        pageRows += processedRow.slice(0, -1);
                       }
-                       // Ta bort bindestreck och mellanslag för att slå ihop avstavade ord
                       pageRows = pageRows.replace(/-\s+/g, "");
                       pageRows = pageRows.replace(/:/g, "");
                     }
                   }
                 });
               }
-               // Skapa sid-elementet och använd den sammanslagna texten i pageRows
+              
               const pageElement = page && page.rows && (
                 <div key={`${i}-${j}-${k}`}>
                   <h3
                     id={`page-${thisPageIndex}`}
                     className="font-black"
-                    tabIndex={0}
-                    ref={(el) => (headingRefs.current[thisPageIndex] = el)}
+                    aria-hidden="true"
                   >
                     Sida {thisPageIndex}
                   </h3>
-                  <div>{pageRows}</div>
+                  <div>
+                    {wrapFirstWord(pageRows, thisPageIndex)}
+                  </div>
                 </div>
               );
-               if (!firstPageIndex && pageElement) {
+               
+              if (!firstPageIndex && pageElement) {
                 firstPageIndex = thisPageIndex;
                 pagesFromPefObject[thisPageIndex] = pageElement;
               } else if (pageElement) {
@@ -116,9 +134,9 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
       setSavedPageIndex(currentPageIndex);
     }
 
-    // Focus the heading of the current page
-    if (currentPageIndex !== null && headingRefs.current[currentPageIndex]) {
-      headingRefs.current[currentPageIndex].focus();
+    // Focus the first word of the current page content
+    if (currentPageIndex !== null && contentRefs.current[currentPageIndex]) {
+      contentRefs.current[currentPageIndex].focus();
     }
   }, [autoSave, currentPageIndex, savedPageIndex, setSavedPageIndex]);
 
@@ -162,7 +180,12 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     }
   }
 
-
+  const [selectedValue, setSelectedValue] = useState(false);  // temporärt val
+  const [isAutoBläddring, setIsAutoBläddring] = useState(false);  // sparat val
+  
+  const handleSave = () => {
+    setIsAutoBläddring(selectedValue);
+  }
 
   return (
     <div className="flex flex-col pt-5 px-10 w-full screen-view">
@@ -171,38 +194,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
         Tillbaka till uppladdningssida
       </button>
 
-      {/* {cookiePermission === CookieEnum.ALLOWED && (
-        <div className={`mt-3 px-5 py-3 border w-64 rounded shadow text-white border	
-        ${autoSave ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-500 border-emerald-600"
-            : "bg-gradient-to-br from-red-500 via-red-600 to-red-500 border-red-600"}`}>
-
-          <fieldset>
-            <legend className="font-bold mb-1">Automatisk sparning</legend>
-            <div className="flex justify-start items-center">
-              <input type="radio"
-                id="autosave-radio-on"
-                name="autosave"
-                className="m-1"
-                checked={autoSave === true}
-                onChange={() => setAutoSave(true)}
-              />
-              <label htmlFor="autosave-radio-on">Aktivera sparning</label>
-            </div>
-
-            <div className="flex justify-start items-center">
-              <input type="radio"
-                id="autosave-radio-off"
-                name="autosave"
-                className="m-1"
-                checked={autoSave === false}
-                onChange={() => setAutoSave(false)}
-              />
-              <label htmlFor="autosave-radio-off">Inaktivera sparning</label>
-            </div>
-          </fieldset>
-        </div>
-      )} */}
-
+      
       <div className="flex flex-col justify-start items-center mt-20">
         {pefObject.metaData.title && <h2 className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
         {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
@@ -222,6 +214,43 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
             </span>
           </div>
         }
+        <div className="m-2"> 
+        <fieldset aria-describedby="bladdring-beskrivning">
+        <legend>Vill du aktivera automatisk bläddring, vilket innebär att när du har läst klart en sida, kommer nästa sida visas automatisk?</legend>
+        
+        <div role="radiogroup" className="radio-options">
+          <div className="radio-option">
+            <input 
+              type="radio" 
+              id="auto-bladdring-ja" 
+              name="autoBläddring" 
+              value="ja"
+              checked={selectedValue === true}
+              onChange={() => setSelectedValue(true)}
+              className="m-2"
+            />
+            <label htmlFor="auto-bladdring-ja">Ja</label>
+          </div>
+
+          <div className="radio-option">
+            <input 
+              type="radio" 
+              id="auto-bladdring-nej" 
+              name="autoBläddring" 
+              value="nej"
+              checked={selectedValue === false}
+              onChange={() => setSelectedValue(false)}
+              className="m-2"
+            />
+            <label htmlFor="auto-bladdring-nej">Nej</label>
+          </div>
+        </div>
+        <button onClick={handleSave} className="button mb-1">Spara inställning</button>
+        <span id="bladdring-beskrivning" className="sr-only">
+          När automatisk bläddring är aktiverad kommer nästa sida visas automatiskt efter att du läst klart den nuvarande sidan
+        </span>
+      </fieldset>
+    </div>
 
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-full">
           <div className="w-auto p-10 flex justify-center">
@@ -231,6 +260,21 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
           { /* navigator buttons */}
           <div className="h-auto rounded-b border-t-2 border-neutral-400 text-md">
             <div className="flex flex-row flex-nowrap items-center h-20 overflow-hidden border-b border-neutral-400">
+              {isAutoBläddring ? 
+              <><button id={`page-${currentPageIndex +1}`} onFocus={() => handleNextPageBtn()} className="h-full w-full px-2
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 
+              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
+              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
+                Nästa sida
+              </button>
+              <button onClick={() => handlePreviousPageBtn()} className="h-full w-full px-2
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2  
+              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
+              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
+                Föregående sida
+              </button> 
+              </>
+              :<>
               <button id={`page-${currentPageIndex +1}`} onClick={() => handleNextPageBtn()} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
@@ -243,6 +287,8 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Föregående sida
               </button>
+              </>}
+              
               {/* <button onClick={() => handleSetCurrentPage(firstPageIndex)} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
