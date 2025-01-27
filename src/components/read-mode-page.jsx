@@ -180,12 +180,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     }
   }
 
-  const [selectedValue, setSelectedValue] = useState(false);  // temporärt val
-  const [isAutoBläddring, setIsAutoBläddring] = useState(false);  // sparat val
-  
-  const handleSave = () => {
-    setIsAutoBläddring(selectedValue);
-  }
+
 
   return (
     <div className="flex flex-col pt-5 px-10 w-full screen-view">
@@ -214,43 +209,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
             </span>
           </div>
         }
-        <div className="m-2"> 
-        <fieldset aria-describedby="bladdring-beskrivning">
-        <legend>Vill du aktivera automatisk bläddring, vilket innebär att när du har läst klart en sida, kommer nästa sida visas automatisk?</legend>
         
-        <div role="radiogroup" className="radio-options">
-          <div className="radio-option">
-            <input 
-              type="radio" 
-              id="auto-bladdring-ja" 
-              name="autoBläddring" 
-              value="ja"
-              checked={selectedValue === true}
-              onChange={() => setSelectedValue(true)}
-              className="m-2"
-            />
-            <label htmlFor="auto-bladdring-ja">Ja</label>
-          </div>
-
-          <div className="radio-option">
-            <input 
-              type="radio" 
-              id="auto-bladdring-nej" 
-              name="autoBläddring" 
-              value="nej"
-              checked={selectedValue === false}
-              onChange={() => setSelectedValue(false)}
-              className="m-2"
-            />
-            <label htmlFor="auto-bladdring-nej">Nej</label>
-          </div>
-        </div>
-        <button onClick={handleSave} className="button mb-1">Spara inställning</button>
-        <span id="bladdring-beskrivning" className="sr-only">
-          När automatisk bläddring är aktiverad kommer nästa sida visas automatiskt efter att du läst klart den nuvarande sidan
-        </span>
-      </fieldset>
-    </div>
 
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-full">
           <div className="w-auto p-10 flex justify-center">
@@ -260,21 +219,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
           { /* navigator buttons */}
           <div className="h-auto rounded-b border-t-2 border-neutral-400 text-md">
             <div className="flex flex-row flex-nowrap items-center h-20 overflow-hidden border-b border-neutral-400">
-              {isAutoBläddring ? 
-              <><button id={`page-${currentPageIndex +1}`} onFocus={() => handleNextPageBtn()} className="h-full w-full px-2
-              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 
-              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
-              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                Nästa sida
-              </button>
-              <button onClick={() => handlePreviousPageBtn()} className="h-full w-full px-2
-              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2  
-              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
-              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                Föregående sida
-              </button> 
-              </>
-              :<>
+                           
               <button id={`page-${currentPageIndex +1}`} onClick={() => handleNextPageBtn()} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
@@ -287,7 +232,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Föregående sida
               </button>
-              </>}
+              
               
               {/* <button onClick={() => handleSetCurrentPage(firstPageIndex)} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
