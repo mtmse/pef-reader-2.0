@@ -28,30 +28,30 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
         </p>
       </div>
 
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <h4 className="text-lg font-bold mb-2">3. Välj läsläge:</h4>
         <p>Du kan välja mellan två läslägen:</p>
         <ul className="list-disc pl-6">
           <li className="m-2"><strong>"Löpande text":</strong> Texten visas löpande på webbsidan med längre rader för en kontinuerlig läsupplevelse.</li>
           <li className="m-2"><strong>"Sida för sida":</strong> Varje sida från boken visas som en separat sida på webbsidan med samma radlängd som i den ursprungliga boken.</li>
         </ul>
-      </div>
+      </div> */}
 
             <div className="mb-8">
-        <h4 className="text-lg font-bold mb-2">4. Spara senaste läspositionen:</h4>
-        <p>För att spara den senaste läspositionen behöver du tillåta kakor. Den senaste läspositionen sparas automatiskt i kakor så fort sidan scrollas och visas automatiskt när du laddar upp samma bok igen.</p>
+        <h4 className="text-lg font-bold mb-2">3. Spara senaste läspositionen:</h4>
+        <p>För att spara den senaste läspositionen behöver du tillåta kakor. Den senaste läspositionen sparas automatiskt i kakor så fort du byter sida och visas automatiskt när du laddar upp samma bok igen.</p>
       </div>
 
       <div className="mb-8">
-        <h4 className="text-lg font-bold mb-2">5. Navigera i boken:</h4>
-        <p>Beroende på vilket läge du använder kan du använda navigeringen för att hoppa mellan sidor. Observera att om automatisk sparning är aktiverat och du navigerar till första sidan eller till en annan sida, sparas den nya sidan som senaste läsposition.</p>
-        
+        <h4 className="text-lg font-bold mb-2">4. Navigera i boken:</h4>
+        {/* <p>Beroende på vilket läge du använder kan du använda navigeringen för att hoppa mellan sidor. Observera att om automatisk sparning är aktiverat och du navigerar till första sidan eller till en annan sida, sparas den nya sidan som senaste läsposition.</p> */}
+        <p>Du använder knapparna "Nästa sida" och "Föregående sida" för att navigera i boken.</p>
         <ul className="list-disc pl-6">
-          <li className="my-2">
+          {/* <li className="my-2">
             I läget "Löpande text" behöver du navigera till bokens titel med tabb och sedan tabba vidare till den senaste sparade positionen markerad med en h3-rubrik. Därefter navigerar du med piltangenterna tills du har läst klart boken.
-          </li>
+          </li> */}
           <li className="my-2">
-            I läget 'Sida för sida' navigerar du med tabb till bokens titel och sedan till h3-rubriken som markerar sidnumret. Fortsätt nedåt tills du når knappen för nästa sida och klicka på den. När du klickar på knappen för nästa sida kommer du automatiskt att förflyttas till nästa sidas h3-rubrik.          </li>
+            I läsläget navigerar du med tabb till bokens titel och sedan tabbar du in i läsvyn. Fortsätt nedåt tills du når knappen för nästa sida och klicka på den. När du klickar på knappen för nästa sida kommer du automatiskt att förflyttas till nästa sida. Samma sak gäller för "Föregående sida".          </li>
         </ul>
 
       </div>
