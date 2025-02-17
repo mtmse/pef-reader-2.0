@@ -14,7 +14,7 @@ This application is designed to make it easier for users, with or without visual
 ### 2.0.2 (Not in development yet)
   - Type here what was developed 
 
-### 2.0.1 (Latest Version)
+### 2.0.1 (latest Version)
   - Changed from saving the row position by clicking on it to automatically saving the page position.
   - Improved GUI for better accessibility.
   - Optimized for mobile view.
