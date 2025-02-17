@@ -12,8 +12,9 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
     const [showDots, setShowDots] = useState(true);
 
-    updateBrowserTabText(pefObject?.metaData?.title || "Digital punktläsare")
+    updateBrowserTabText(`${pefObject?.metaData?.title} - ${pefObject?.metaData?.author}`  || "Digital punktläsare")
 
+    console.log(pefObject?.metaData)
     // Setup dropzone
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         multiple: false,

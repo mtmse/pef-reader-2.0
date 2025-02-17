@@ -14,7 +14,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   let autoSave = true;
   let bookView = FormatModeEnum.NORMAL_VIEW
 
-  updateBrowserTabText(pefObject.metaData.title);
+  updateBrowserTabText(`${pefObject?.metaData?.title} - ${pefObject?.metaData?.author}`);
 
   function isRowMostlyBlank(row) {
     const blankCharCount = ((row.match(/⣿/g) || []).length) + ((row.match(/ /g) || []).length);
@@ -31,7 +31,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
       <>
         <span
           ref={el => contentRefs.current[pageIndex] = el}
-          tabIndex={0}
+          tabIndex={-1}
         >
           {words[0]}
         </span>
@@ -134,7 +134,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
       setSavedPageIndex(currentPageIndex);
     }
 
-    // Focus the first word of the current page content
+    // Focus the heading of the current page
     if (currentPageIndex !== null && contentRefs.current[currentPageIndex]) {
       contentRefs.current[currentPageIndex].focus();
     }
@@ -185,14 +185,9 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   return (
     <div className="flex flex-col pt-5 px-10 w-full screen-view">
       <div className="full-height">
-      <button onClick={() => setReadmode(false)} className="button mb-1">
-        Tillbaka till uppladdningssida
-      </button>
-
-      
+            
       <div className="flex flex-col justify-start items-center mt-20">
-        {pefObject.metaData.title && <h2 className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
-        {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
+       
 
         {!autoSave && cookiePermission === CookieEnum.ALLOWED &&
           <div className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
@@ -240,10 +235,19 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Förstasidan
               </button> */}
+               <button onClick={() => setReadmode(false)} className="h-full w-full px-2
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2  
+              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
+              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
+              Tillbaka till uppladdningssida
+            </button> 
             </div>
+            
 
             <div className="flex flex-row flex-nowrap items-center w-full h-32 overflow-hidden rounded-b">
-              <form
+              
+            
+            <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   const pageNumber = parseInt(e.target.elements.goToPage.value, 10);
@@ -255,7 +259,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 <div className="flex flex-col items-center justify-center h-full w-full mx-4">
                   <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: (av {maxPageIndex} sidor)</label>
                   <div className="flex flex-row w-full">
-                    <input className="border-y border border-neutral-400 w-full max-w-56" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
+                    <input className="border-y border border-neutral-400 w-40 max-w-56" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
                     <button
                       type="submit"
                       className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
@@ -264,12 +268,32 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                       focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                       Gå till sida
                     </button>
+                    
                   </div>
+                  
                 </div>
+                
               </form>
+              
+              
 
-          {/* <div className="p-1 flex flex-col justify-center items-center h-full w-60
-          bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200"> */}
+          <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
+                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
+          <div className="m-2 ">
+          {pefObject.metaData.title && <h2>Titel: {pefObject.metaData.title}</h2>}
+              {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
+              </div>
+              </div>
+
+              <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
+                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
+          <div className="m-2">
+          <p>Du befinner dig på sida {currentPageIndex}.</p> 
+
+              </div>
+              </div>
+
+
           {/* <fieldset>
             <legend className="font-medium mb-px">Växla vy:</legend>
             <div className="flex flex-row justify-center items-center">
