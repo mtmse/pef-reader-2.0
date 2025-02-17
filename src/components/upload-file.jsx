@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react"
 import { fileReader, checkIfPefFileType } from "../utils/fileReader"
-import { UnitModeEnum, FileLoadStatusEnum } from "../data/enums.js"
+import { UnitModeEnum, FileLoadStatusEnum, CookieEnum } from "../data/enums.js"
 import { useDropzone } from 'react-dropzone'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
 import brailleIcon from '../media/braille-icon.png';
+import { metadataVariableTranslation } from "../data/metadataTranslator.js";
+import updateBrowserTabText from "../utils/updateBrowserTabText.js";
 
-export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
+export default function UploadFile({ cookiePermission, setCookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject, setPefObject, fileName, setFileName, howToRead, setHowToRead }) {
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
     const [showDots, setShowDots] = useState(true);
 
+    updateBrowserTabText( pefObject?.metadata?.title || "Digipunkt Legimus")
+
+    console.log(pefObject?.metaData)
     // Setup dropzone
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         multiple: false,
@@ -76,8 +81,18 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
         }
     }
 
+    // useEffect(() => {
+    //     // Scrolla till elementet med ID "MainContentArea" när komponenten monteras
+    //     const mainContentElement = document.getElementById("MainContentArea");
+    //     if (mainContentElement) {
+    //         mainContentElement.scrollIntoView({ behavior: "smooth", block: "start" });
+    //         mainContentElement.focus();
+    //     }}, [])
+
+        // console.log(cookiePermission);
+
     return (
-        <div className="flex flex-col pt-10 px-20 w-full">
+        <div className="flex flex-col pt-10 px-20 w-full screen-view">
 
             <div className="flex flex-col justify-center items-center p-4 md:p-8 lg:p-12">
                 <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
@@ -85,13 +100,30 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                         <img src={brailleIcon} className="w-full h-full" alt="Punktskriftsikon" />
                     </div>
                     <div className="text-center md:text-left">
-                        <h2 id="MainContentArea" className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">Från punktskrift till svartskrift på några sekunder</h2>
+                        <h2 id="MainContentArea" tabIndex={0} className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">Från punktskrift till svartskrift på några sekunder</h2>
                     </div>
                 </div>
                 <div className="mt-4 md:mt-6 lg:mt-8 px-4 md:px-8 lg:px-12 text-center md:text-left">
                     <p className="text-lg md:text-xl lg:text-2xl">När du har laddat ner en punktskriftsbok från Legimus kan du läsa den här med din punktdisplay.</p>
                 </div>
+
+                {cookiePermission === CookieEnum.DENIED &&
+                <> 
+                <div className="m-5">
+                    <p className="text-lg md:text-xl">Eftersom du inte har godkänt kakor kommer din läsposition inte att sparas. Vill du godkänna kakor och spara din läsposition?</p>
+                </div>
+                <button id="confirm-cookie" onClick={() => setCookiePermission(CookieEnum.ALLOWED)}
+                className="flex-none w-64 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out mr-2 w-4/5
+                bg-gradient-to-b from-emerald-400 to-emerald-700   
+                hover:from-emerald-600 hover:to-emerald-800
+                focus:from-emerald-600 focus:to-emerald-800">
+                Godkänn kakor
+            </button>
+            </>
+            }
             </div>
+
+            
 
             <div className="flex flex-col items-start my-10">
                 <h3 className="text-4xl font-bold my-5">Ladda upp filen</h3>
@@ -140,8 +172,35 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                     {fileName}</span>
             </div>
 
-            <fieldset className="mt-10">
-                <legend className="text-2xl font-bold" >Hur vill du läsa boken?</legend>
+            <fieldset>{pefObject &&
+            <div className="mt-10">
+                <legend className="text-2xl font-bold mb-2">Information om din uppladdade pef</legend>
+
+                {pefObject && pefObject.metaData && pefObject.metaData.language ? (
+                Object.entries(pefObject.metaData).map(([key, value]) => {
+                    return (
+                    value &&
+                    metadataVariableTranslation(key, pefObject.metaData.language) && (
+                        <label key={key}>
+                        <p>
+                            <strong>{metadataVariableTranslation(key, pefObject.metaData.language)}:</strong> {value}
+                        </p>
+                        </label>
+                    
+                    )
+                    );
+                })
+                ) : (
+                <p>Ingen fil uppladdad. Välj fil att ladda upp.</p>
+                )}
+            </div>}
+            </fieldset>
+
+            {/* <fieldset className="mt-10">
+                {pefObject && pefObject.metaData && pefObject.metaData.title 
+                ? <legend className="text-2xl font-bold" >Hur vill du läsa boken {pefObject.metaData.title}? 
+                </legend>
+                : <legend className="text-2xl font-bold" >Hur vill du läsa boken?</legend>}
                 <div className="flex flex-row my-6">
                     <input
                         type="radio"
@@ -169,11 +228,20 @@ export default function UploadFile({ setSavedPageIndex, setReadmode, pefObject, 
                         Sida för sida
                     </label>
                 </div>
-            </fieldset>
+            </fieldset> */}     
 
-            <div className="mt-8 mb-60">
+            {savedPageIndex && <p className="mt-1">Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}.</p>}
+
+
+            <div className="mt-5 mb-10">
                 {(fileLoadStatus === FileLoadStatusEnum.INITIAL || fileLoadStatus === FileLoadStatusEnum.SUCCESSFUL) && (
-                    <button onClick={HandleSwapToReadMode} className="button" >Läs boken</button>
+                    <button
+                    onClick={() => {
+                      HandleSwapToReadMode();
+                      setHowToRead(UnitModeEnum.PAGE_BY_PAGE);
+                    }}
+                    className="button"
+                  >Läs boken</button>
                 )}
 
                 {fileLoadStatus === FileLoadStatusEnum.FAILED && (

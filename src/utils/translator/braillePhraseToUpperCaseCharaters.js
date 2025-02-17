@@ -18,7 +18,7 @@ export default function braillePhraseToUpperCaseCharacters(braillePhrase, curren
 
     // Check if the first letter should be uppercase.
     if (braillePhrase.charAt(currentIndex + 1) !== upperCaseSign) {
-        return brailleCharToLetter(braillePhrase.charAt(currentIndex + 1)).toUpperCase();
+        return brailleCharToLetter(braillePhrase.charAt(currentIndex + 1))?.toUpperCase();
     }
 
     // Check if the whole word should be uppercase.

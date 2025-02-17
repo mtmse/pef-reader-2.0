@@ -3,7 +3,6 @@ import brailleTranslator from "../utils/translator/brailleTranslator.js";
 import { filterUnnecessarySentence } from "../utils/filterSetences.js"
 import { manipulatePageIndexToRemoveUnnecessaryPages } from "../utils/filterPages.js";
 import { FormatModeEnum, CookieEnum } from '../data/enums.js'
-import { metadataVariableTranslation } from '../data/metadataTranslator.js'
 import updateBrowserTabText from "../utils/updateBrowserTabText.js";
 
 export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, cookiePermission, setReadmode, pefObject }) {
@@ -11,17 +10,36 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   const [maxPageIndex, setMaxPageIndex] = useState(0);
   const [firstPageIndex, setFirstPageIndex] = useState(0)
   const [currentPageIndex, setCurrentPageIndex] = useState(null)
-  const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
-  const [autoSave, setAutoSave] = useState(true)
-  const headingRefs = useRef({}); // Store references to the page headings
+  const contentRefs = useRef({}); // Store references to the page content
+  let autoSave = true;
+  let bookView = FormatModeEnum.NORMAL_VIEW
+  const bookInfo = `${pefObject?.metaData?.title} av ${pefObject?.metaData?.author}`
 
-  const [selectedView, setSelectedView] = useState(bookView); // Temporär vy
+  updateBrowserTabText(bookInfo || "Digipunkt Legimus");
 
-  const handleConfirm = () => {
-    setBookView(selectedView); // Uppdatera när knappen trycks
+  function isRowMostlyBlank(row) {
+    const blankCharCount = ((row.match(/⣿/g) || []).length) + ((row.match(/ /g) || []).length);
+    const percentageBlank = (blankCharCount / row.length) * 100;
+    return percentageBlank >= 50;
+  }
+
+  // Function to wrap the first word in a span with a ref
+  const wrapFirstWord = (text, pageIndex) => {
+    const words = text.split(/\s+/);
+    if (words.length === 0) return text;
+    
+    return (
+      <>
+        <span
+          ref={el => contentRefs.current[pageIndex] = el}
+          tabIndex={-1}
+        >
+          {words[0]}
+        </span>
+        {' ' + words.slice(1).join(' ')}
+      </>
+    );
   };
-
-  updateBrowserTabText(pefObject.metaData.title);
 
   const renderPagesFromPefObject = useCallback(() => {
     const pagesFromPefObject = [];
@@ -42,27 +60,51 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               const page = sectionPages[k];
               const thisPageIndex = pageIndex;
               pageIndex++;
-
+ 
+              let pageRows = "";
+ 
+              if (page && page.rows) {
+                page.rows.forEach((row, index) => {
+                  if (row != null) {
+                    let processedRow =
+                      bookView === FormatModeEnum.NORMAL_VIEW
+                        ? brailleTranslator(filterUnnecessarySentence(row))
+                        : filterUnnecessarySentence(row);
+ 
+                    if (processedRow != null) {
+                      if (index === 0 && isRowMostlyBlank(processedRow)) {
+                        return;
+                      }
+                      const lastChar = processedRow.charAt(
+                        processedRow.length - 1
+                      );
+                      if (lastChar !== "⠱" && lastChar !== ":") {
+                        pageRows += processedRow;
+                      } else {
+                        pageRows += processedRow.slice(0, -1);
+                      }
+                      pageRows = pageRows.replace(/-\s+/g, "");
+                      pageRows = pageRows.replace(/:/g, "");
+                    }
+                  }
+                });
+              }
+              
               const pageElement = page && page.rows && (
                 <div key={`${i}-${j}-${k}`}>
-                  <h3 id={`page-${thisPageIndex}`} 
-                  className="font-black" 
-                  tabIndex={0}
-                  ref={el => headingRefs.current[thisPageIndex] = el}>
+                  <h3
+                    id={`page-${thisPageIndex}`}
+                    className="font-black hidden"
+                    aria-hidden="true"
+                  >
                     Sida {thisPageIndex}
                   </h3>
-                  {page.rows.map((row, l) => (
-                    <div key={`${i}-${j}-${k}-${l}`}>
-                      <span>
-                        {bookView === FormatModeEnum.NORMAL_VIEW
-                          ? brailleTranslator(filterUnnecessarySentence(row))
-                          : filterUnnecessarySentence(row)}
-                      </span>
-                    </div>
-                  ))}
+                  <div>
+                    {wrapFirstWord(pageRows, thisPageIndex)}
+                  </div>
                 </div>
               );
-
+               
               if (!firstPageIndex && pageElement) {
                 firstPageIndex = thisPageIndex;
                 pagesFromPefObject[thisPageIndex] = pageElement;
@@ -76,7 +118,6 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
         }
       }
     }
-
     setPages(pagesFromPefObject);
     setFirstPageIndex(firstPageIndex);
     setMaxPageIndex(pageIndex - 1);
@@ -95,8 +136,8 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     }
 
     // Focus the heading of the current page
-    if (currentPageIndex !== null && headingRefs.current[currentPageIndex]) {
-      headingRefs.current[currentPageIndex].focus();
+    if (currentPageIndex !== null && contentRefs.current[currentPageIndex]) {
+      contentRefs.current[currentPageIndex].focus();
     }
   }, [autoSave, currentPageIndex, savedPageIndex, setSavedPageIndex]);
 
@@ -143,46 +184,11 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
 
 
   return (
-    <div className="flex flex-col pt-5 px-10 w-full">
-      <button onClick={() => setReadmode(false)} className="button mb-5">
-        Tillbaka till startsida
-      </button>
-
-      {cookiePermission === CookieEnum.ALLOWED && (
-        <div className={`mt-3 px-5 py-3 border w-64 rounded shadow text-white border	
-        ${autoSave ? "bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-500 border-emerald-600"
-            : "bg-gradient-to-br from-red-500 via-red-600 to-red-500 border-red-600"}`}>
-
-          <fieldset>
-            <legend className="font-bold mb-1">Automatisk sparning</legend>
-            <div className="flex justify-start items-center">
-              <input type="radio"
-                id="autosave-radio-on"
-                name="autosave"
-                className="m-1"
-                checked={autoSave === true}
-                onChange={() => setAutoSave(true)}
-              />
-              <label htmlFor="autosave-radio-on">Aktivera sparning</label>
-            </div>
-
-            <div className="flex justify-start items-center">
-              <input type="radio"
-                id="autosave-radio-off"
-                name="autosave"
-                className="m-1"
-                checked={autoSave === false}
-                onChange={() => setAutoSave(false)}
-              />
-              <label htmlFor="autosave-radio-off">Inaktivera sparning</label>
-            </div>
-          </fieldset>
-        </div>
-      )}
-
+    <div className="flex flex-col pt-5 px-10 w-full screen-view">
+      <div className="full-height">
+            
       <div className="flex flex-col justify-start items-center mt-20">
-        {pefObject.metaData.title && <h2 className="ml-8 text-2xl font-bold" tabIndex={0}>Titel: {pefObject.metaData.title}</h2>}
-        {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
+       
 
         {!autoSave && cookiePermission === CookieEnum.ALLOWED &&
           <div className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
@@ -199,6 +205,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
             </span>
           </div>
         }
+        
 
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-full">
           <div className="w-auto p-10 flex justify-center">
@@ -208,6 +215,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
           { /* navigator buttons */}
           <div className="h-auto rounded-b border-t-2 border-neutral-400 text-md">
             <div className="flex flex-row flex-nowrap items-center h-20 overflow-hidden border-b border-neutral-400">
+                           
               <button id={`page-${currentPageIndex +1}`} onClick={() => handleNextPageBtn()} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
@@ -220,16 +228,27 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Föregående sida
               </button>
-              <button onClick={() => handleSetCurrentPage(firstPageIndex)} className="h-full w-full px-2
+              
+              
+              {/* <button onClick={() => handleSetCurrentPage(firstPageIndex)} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Förstasidan
-              </button>
+              </button> */}
+               <button onClick={() => setReadmode(false)} className="h-full w-full px-2
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2  
+              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
+              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
+              Tillbaka till uppladdningssida
+            </button> 
             </div>
+            
 
             <div className="flex flex-row flex-nowrap items-center w-full h-32 overflow-hidden rounded-b">
-              <form
+              
+            
+            <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   const pageNumber = parseInt(e.target.elements.goToPage.value, 10);
@@ -241,22 +260,42 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 <div className="flex flex-col items-center justify-center h-full w-full mx-4">
                   <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: (av {maxPageIndex} sidor)</label>
                   <div className="flex flex-row w-full">
-                    <input className="border-y border border-neutral-400 w-full max-w-56" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
+                    <input className="border-y border border-neutral-400 w-40 max-w-56" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
                     <button
                       type="submit"
                       className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
                       bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
                       hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
                       focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                      Gå till
+                      Gå till sida
                     </button>
+                    
                   </div>
+                  
                 </div>
+                
               </form>
+              
+              
 
-          <div className="p-1 flex flex-col justify-center items-center h-full w-60
-          bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200">
-          <fieldset>
+          <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
+                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
+          <div className="m-2 ">
+          {pefObject.metaData.title && <h2>Titel: {pefObject.metaData.title}</h2>}
+              {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
+              </div>
+              </div>
+
+              <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
+                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
+          <div className="m-2">
+          <p>Du befinner dig på sida {currentPageIndex}.</p> 
+
+              </div>
+              </div>
+
+
+          {/* <fieldset>
             <legend className="font-medium mb-px">Växla vy:</legend>
             <div className="flex flex-row justify-center items-center">
               <input
@@ -283,7 +322,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               <label htmlFor="braille-view">Punktskrift</label>
             </div>
             {/* Knapp för att bekräfta valet */}
-            <button
+            {/* <button
                 className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
                 bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
                 hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
@@ -292,34 +331,14 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               >
                 Välj
               </button>
-          </fieldset>
-        </div>
+          </fieldset> */} 
+        {/* </div> */}
       </div>
     </div>
   </div>
 
-        <div className="flex flex-col bg-neutral-50 rounded my-20 pt-5 pb-20 px-10 w-full border shadow">
-          <h3 className="font-bold text-lg mb-3" tabIndex={0}>Grundläggande bibliografisk information</h3>
-
-          {/* Render metadata labels */}
-          {pefObject.metaData && pefObject.metaData.language &&
-            Object.entries(pefObject.metaData)
-              .map(([key, value]) => {
-                return value && metadataVariableTranslation(key, pefObject.metaData.language) && (
-                  <label key={key}>
-                    <strong>{metadataVariableTranslation(key, pefObject.metaData.language)}:</strong> {value}
-                  </label>
-                );
-              })
-          }
-
-          {/* Render number of pages in the application */}
-          {maxPageIndex &&
-            <label>
-              <strong>Antal sidor i applikationen:</strong> {maxPageIndex}
-            </label>
-          }
-        </div>
+      
+      </div>
       </div>
     </div >
   );

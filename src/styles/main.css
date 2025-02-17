@@ -1,9 +1,13 @@
-main {
-    background-color: #fff;
-    min-height: 100vh;
+.main-view {
+    background-image: url('../media/bg_body.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* min-height: 100vh; */
     height: auto;
-    max-width: 1080px;
+    /* max-width: 1080px; */
 }
+
 
 main .button {
     background: linear-gradient(200deg, #A54399, #7a196f);

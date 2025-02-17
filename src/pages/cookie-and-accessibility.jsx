@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { CookieEnum } from "../data/enums";
+import Footer from "../components/footer";
 
 export default function CookieAndAccessibilityPage({ cookiePermission, setCookiePermission }) {
   const navigate = useNavigate();
 
   return (
-    <main className="mx-auto px-20 pt-10 pb-20">
+    <>
+    <main className="mx-auto main-view px-20">
+      <div className="screen-view p-10">
       <h2 className="text-2xl font-bold mb-4" id="MainContentArea">Kakor och Tillgänglighet</h2>
       <p className="mb-6">
         Syftet med denna policy är att ge dig som användare av Digital punktläsare webbplats
@@ -83,7 +86,7 @@ export default function CookieAndAccessibilityPage({ cookiePermission, setCookie
         </ul>
 
         <p className="my-10">
-          Webbplatsen uppdaterades senast den 25 maj 2024.
+          Webbplatsen uppdaterades senast den 27 januari 2025.
         </p>
       </section>
 
@@ -91,7 +94,7 @@ export default function CookieAndAccessibilityPage({ cookiePermission, setCookie
       <div className="w-full flex justify-center">
         {cookiePermission ?
           <button className="button" onClick={() => { navigate('/') }}>
-            Ta mig till startsidan
+            Ta mig till uppladdningen
           </button>
           :
           <button className="button" onClick={() => {
@@ -102,6 +105,9 @@ export default function CookieAndAccessibilityPage({ cookiePermission, setCookie
           </button>
         }
       </div>
+      </div>
     </main>
+    <Footer/>
+    </>
   );
 }

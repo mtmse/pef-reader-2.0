@@ -5,8 +5,10 @@ import ReadModePage from "../components/read-mode-page.jsx";
 import { UnitModeEnum, CookieEnum } from "../data/enums.js";
 import { useNavigate } from "react-router-dom";
 import { setLatestPageIndexToCookie, getLatestPageIndexFromCookieInt } from "../services/cookieManager.js";
+import Navbar from "../components/navbar.jsx";
+import Footer from "../components/footer.jsx";
 
-export default function MainPage({ cookiePermission }) {
+export default function MainPage({ cookiePermission, setCookiePermission }) {
   const [pefObject, setPefObject] = useState(null);
   const [fileName, setFileName] = useState('ingen fil vald');
   const [viewMode, setViewMode] = useState(false);
@@ -36,42 +38,56 @@ export default function MainPage({ cookiePermission }) {
   }, [cookiePermission, savedPageIndex, pefObject]);
 
   return (
-    <main id="MainContentArea" className="mx-auto">
-      {!viewMode ? (
-        <UploadFile
-          cookiePermission={cookiePermission}
-          setReadmode={setViewMode}
-          pefObject={pefObject}
-          setPefObject={setPefObject}
-          fileName={fileName}
-          setFileName={setFileName}
-          howToRead={howToRead}
-          setHowToRead={setHowToRead}
-          setSavedPageIndex={setSavedPageIndex}
-        />
-      ) : (
-        <>
-          {howToRead === UnitModeEnum.ONE_FLOW ? (
-            <ReadModeFlow
-              cookiePermission={cookiePermission}
-              setReadmode={setViewMode}
-              pefObject={pefObject}
-              setHowToRead={setHowToRead}
-              savedPageIndex={savedPageIndex}
-              setSavedPageIndex={setSavedPageIndex}
-            />
-          ) : (
-            <ReadModePage
-              cookiePermission={cookiePermission}
-              setHowToRead={setHowToRead}
-              setReadmode={setViewMode}
-              savedPageIndex={savedPageIndex}
-              setSavedPageIndex={setSavedPageIndex}
-              pefObject={pefObject}
-            />
-          )}
-        </>
-      )}
-    </main>
+    <>
+   <>
+  {/* Villkorlig rendering av Navbar */}
+  {(!viewMode || (viewMode && howToRead === null)) && <Navbar />}
+
+    {/* removing MainContentArea from id cause interfering with heading and */}
+  <main id="" className="main-view">
+    {!viewMode ? (
+      <UploadFile
+        setCookiePermission={setCookiePermission}
+        cookiePermission={cookiePermission}
+        setReadmode={setViewMode}
+        pefObject={pefObject}
+        setPefObject={setPefObject}
+        fileName={fileName}
+        setFileName={setFileName}
+        howToRead={howToRead}
+        setHowToRead={setHowToRead}
+        setSavedPageIndex={setSavedPageIndex}
+        savedPageIndex={savedPageIndex}
+      />
+    ) : (
+      <>
+        {howToRead === UnitModeEnum.ONE_FLOW ? (
+          <ReadModeFlow
+            cookiePermission={cookiePermission}
+            setReadmode={setViewMode}
+            pefObject={pefObject}
+            setHowToRead={setHowToRead}
+            savedPageIndex={savedPageIndex}
+            setSavedPageIndex={setSavedPageIndex}
+          />
+        ) : (
+          <ReadModePage
+            cookiePermission={cookiePermission}
+            setHowToRead={setHowToRead}
+            setReadmode={setViewMode}
+            savedPageIndex={savedPageIndex}
+            setSavedPageIndex={setSavedPageIndex}
+            pefObject={pefObject}
+          />
+        )}
+      </>
+    )}
+  </main>
+
+  {/* Villkorlig rendering av Footer */}
+  {(!viewMode || (viewMode && howToRead === null)) && <Footer />}
+</>
+
+    </>
   );
 }

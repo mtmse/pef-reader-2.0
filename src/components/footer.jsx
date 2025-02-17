@@ -10,6 +10,13 @@ export default function Footer() {
       <div className="container mx-auto px-10 flex flex-col items-center justify-center">
         <div className="text-neutral-700 flex flex-col items-center">
           <nav className="mt-2">
+          <button
+              className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2 bg-transparent border-0 cursor-pointer p-0"
+              onClick={() => navigate('/instruktion')}
+            >
+              Användarinstruktioner
+            </button>
+            |
             <a
               className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2"
               href="https://www.mtm.se/"
@@ -23,14 +30,7 @@ export default function Footer() {
             >
               Legimus
             </a>
-            |
-            <button
-              className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2 bg-transparent border-0 cursor-pointer p-0"
-              onClick={() => navigate('/instruktion')}
-            >
-              Användarinstruktioner
-            </button>
-            |
+            |      
             <button
               className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2 bg-transparent border-0 cursor-pointer p-0"
               onClick={() => navigate('/om-kakor-och-tillganglighet')}

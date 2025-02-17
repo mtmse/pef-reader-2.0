@@ -1,8 +1,12 @@
+import Footer from "../components/footer";
+
 export default function NotFoundPage() {
   
     return (
-      <main className="mx-auto px-20 pt-10 pb-20">
-    <h2 className="mb-6 text-4xl font-bold text-slate-600 tracking-tight" tabIndex={0}>
+      <>
+      <main className="mx-auto main-view">
+        <div className="screen-view p-10">
+        <h2 className="mb-6 text-4xl font-bold text-slate-600 tracking-tight" tabIndex={0}>
           404 - Sidan kunde inte hittas
         </h2>
         <p className="mb-8 text-lg text-gray-700">
@@ -11,7 +15,10 @@ export default function NotFoundPage() {
         <a href="/" className="button">
           Tillbaka till startsidan
         </a>
+        </div>
       </main>
+      <Footer />
+      </>
     )
   }
   

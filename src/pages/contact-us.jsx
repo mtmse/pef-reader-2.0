@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCopy } from '@fortawesome/free-regular-svg-icons';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import Footer from '../components/footer';
 
 export default function ContactUsPage() {
     const [isCopied, setIsCopied] = useState(false);
@@ -22,7 +23,9 @@ export default function ContactUsPage() {
 
 
     return (
-        <main className="mx-auto px-20 pt-10 pb-20">
+        <>
+        <main className="mx-auto main-view px-20">
+            <div className='screen-view p-10'>
             <h2 className="text-2xl font-semibold mb-5" tabIndex={0}>Kontakta MTM</h2>
 
             <p className="mb-5 text-lg">
@@ -74,10 +77,12 @@ export default function ContactUsPage() {
 
             <div className="w-full flex justify-center">
                 <button className="button" onClick={() => { navigate('/') }}>
-                    Ta mig till startsidan
+                    Ta mig till uppladdningssidan 
                 </button>
             </div>
-
+            </div>
         </main>
+        <Footer />
+        </>
     );
 }
