@@ -12,7 +12,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
     const [showDots, setShowDots] = useState(true);
 
-    updateBrowserTabText(`${pefObject?.metaData?.title} - ${pefObject?.metaData?.author}`  || "Digital punktläsare")
+    updateBrowserTabText( pefObject?.metadata?.title || "Digipunkt Legimus")
 
     console.log(pefObject?.metaData)
     // Setup dropzone
@@ -230,10 +230,10 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 </div>
             </fieldset> */}     
 
-            {savedPageIndex && <p className="mt-1">Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}</p>}
+            {savedPageIndex && <p className="mt-1">Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}.</p>}
 
 
-            <div className="mt-2 mb-10">
+            <div className="mt-5 mb-10">
                 {(fileLoadStatus === FileLoadStatusEnum.INITIAL || fileLoadStatus === FileLoadStatusEnum.SUCCESSFUL) && (
                     <button
                     onClick={() => {

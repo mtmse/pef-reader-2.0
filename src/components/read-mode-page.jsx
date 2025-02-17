@@ -13,8 +13,9 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   const contentRefs = useRef({}); // Store references to the page content
   let autoSave = true;
   let bookView = FormatModeEnum.NORMAL_VIEW
+  const bookInfo = `${pefObject?.metaData?.title} av ${pefObject?.metaData?.author}`
 
-  updateBrowserTabText(`${pefObject?.metaData?.title} - ${pefObject?.metaData?.author}`);
+  updateBrowserTabText(bookInfo || "Digipunkt Legimus");
 
   function isRowMostlyBlank(row) {
     const blankCharCount = ((row.match(/⣿/g) || []).length) + ((row.match(/ /g) || []).length);
@@ -93,7 +94,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 <div key={`${i}-${j}-${k}`}>
                   <h3
                     id={`page-${thisPageIndex}`}
-                    className="font-black"
+                    className="font-black hidden"
                     aria-hidden="true"
                   >
                     Sida {thisPageIndex}

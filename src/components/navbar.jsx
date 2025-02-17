@@ -25,7 +25,7 @@ export default function Navbar({ showCookieBanner, setCookiePermission }) {
       {showCookieBanner && <CookieBanner setCookiePermission={setCookiePermission} />}
 
       <div className="flex justify-between items-center px-4 py-1 mx-auto border-y border-neutral-400 bg-gradient-to-b from-neutral-300 via-neutral-200 to-neutral-300">
-        <h1 className="text-lg font-bold" tabIndex={0}>Digital punktläsare</h1>
+        <h1 className="text-lg font-bold" tabIndex={0}>Digipunkt Legimus</h1>
       </div>
     </header>
   );
