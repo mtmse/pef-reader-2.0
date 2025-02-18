@@ -51,7 +51,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
             I läget "Löpande text" behöver du navigera till bokens titel med tabb och sedan tabba vidare till den senaste sparade positionen markerad med en h3-rubrik. Därefter navigerar du med piltangenterna tills du har läst klart boken.
           </li> */}
           <li className="my-2">
-            I läsläget navigerar du med tabb till bokens titel och sedan tabbar du in i läsvyn. Fortsätt nedåt tills du når knappen för nästa sida och klicka på den. När du klickar på knappen för nästa sida kommer du automatiskt att förflyttas till nästa sida. Samma sak gäller för "Föregående sida".          </li>
+            I läsläget navigerar du med tabb in i läsvyn. Fortsätt nedåt tills du når knappen för nästa sida och klicka på den. När du klickar på knappen för nästa sida kommer du automatiskt att förflyttas till nästa sida. Samma sak gäller för "Föregående sida".          </li>
         </ul>
 
       </div>

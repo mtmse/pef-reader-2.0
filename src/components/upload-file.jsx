@@ -14,7 +14,6 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
 
     updateBrowserTabText( pefObject?.metadata?.title || "Digipunkt Legimus")
 
-    console.log(pefObject?.metaData)
     // Setup dropzone
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         multiple: false,
@@ -100,7 +99,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                         <img src={brailleIcon} className="w-full h-full" alt="Punktskriftsikon" />
                     </div>
                     <div className="text-center md:text-left">
-                        <h2 id="MainContentArea" tabIndex={0} className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">Från punktskrift till svartskrift på några sekunder</h2>
+                        <h2 id="MainContentArea" tabIndex={0} className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">Från Legimus till din punktdisplay</h2>
                     </div>
                 </div>
                 <div className="mt-4 md:mt-6 lg:mt-8 px-4 md:px-8 lg:px-12 text-center md:text-left">

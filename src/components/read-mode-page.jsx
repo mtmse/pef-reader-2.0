@@ -245,7 +245,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
             </div>
             
 
-            <div className="flex flex-row flex-nowrap items-center w-full h-32 overflow-hidden rounded-b">
+            <div className="flex flex-row flex-nowrap items-center w-full h-20 overflow-hidden rounded-b">
               
             
             <form
@@ -260,10 +260,10 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 <div className="flex flex-col items-center justify-center h-full w-full mx-4">
                   <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: (av {maxPageIndex} sidor)</label>
                   <div className="flex flex-row w-full">
-                    <input className="border-y border border-neutral-400 w-40 max-w-56" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
+                    <input className="border-y border border-neutral-400" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
                     <button
                       type="submit"
-                      className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
+                      className="px-2 mx-1 h-full border border-gray-400 
                       bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
                       hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
                       focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
@@ -280,7 +280,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
 
           <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
                 bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
-          <div className="m-2 ">
+          <div className="mt-5">
           {pefObject.metaData.title && <h2>Titel: {pefObject.metaData.title}</h2>}
               {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
               </div>
@@ -289,7 +289,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
                 bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
           <div className="m-2">
-          <p>Du befinner dig på sida {currentPageIndex}.</p> 
+          <p tabIndex={0}>Du befinner dig på sida {currentPageIndex}.</p> 
 
               </div>
               </div>
