@@ -20,7 +20,9 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
         accept: {
             'image/x-pef': ['.pef'],
             'application/x-pef+xml': ['.pef'],
-            'application/x-pentax-pef': ['.pef']
+            'application/x-pentax-pef': ['.pef'],
+            'image/pef': ['.pef'] // Lägg till denna rad för Firefox
+
         },
         onDrop: handleAddFile,
         useFsAccessApi: false,
@@ -174,6 +176,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
             <fieldset>{pefObject &&
             <div className="mt-10">
                 <legend className="text-2xl font-bold mb-2">Information om din uppladdade pef</legend>
+                <p><strong>Författare:</strong> {pefObject.metaData.author}</p>
 
                 {pefObject && pefObject.metaData && pefObject.metaData.language ? (
                 Object.entries(pefObject.metaData).map(([key, value]) => {

@@ -1,6 +1,6 @@
 import { languageCodeTranslator, bibliographicInformationTranslator } from "../data/metadataTranslator";
 
-const KNOWN_PEF_FILE_TYPES = ['image/PEF', 'image/x-pentax-pef', 'application/x-pef+xml'];
+const KNOWN_PEF_FILE_TYPES = ['image/PEF', 'image/x-pentax-pef', 'application/x-pef+xml', 'image/pef'];
 
 export function checkIfPefFileType(fileType) {
     return KNOWN_PEF_FILE_TYPES.includes(fileType);
