@@ -10,7 +10,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
     <main className="mx-auto main-view">
       <div className="screen-view p-10">
       <h2 className="text-2xl font-bold mb-4" id="MainContentArea" tabIndex={0}>Välkommen till digipunkt — din digitala punktläsare!</h2>
-      <p className="mb-6">Denna applikation är utformad för att göra det enklare för användare utan eller med synnedsättning att få tillgång till punktskriftsböcker digitalt och läsa dem direkt i webbläsaren.</p>
+      <p className="mb-6">Den digitala punktläsaren är utformad för att göra det enklare för användare av punktdisplay att få tillgång till punktskriftsböcker digitalt och läsa dem direkt i webbläsaren.</p>
 
       <div className="mb-8">
         <h3 className="text-md font-bold mb-2">Följ dessa enkla steg för att använda applikationen effektivt:</h3>
