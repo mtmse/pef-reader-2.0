@@ -1,9 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { CookieEnum } from "../data/enums";
 import Footer from "../components/footer";
+import updateBrowserTabText from "../utils/updateBrowserTabText.js";
+
 
 export default function InstructionPage({ cookiePermission, setCookiePermission }) {
   const navigate = useNavigate();
+
+  updateBrowserTabText( "Instruktion | Digipunkt Legimus");
+
 
   return (
     <>
