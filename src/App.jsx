@@ -4,10 +4,20 @@ import InstructionPage from './pages/instruction.jsx';
 import CookieAndAccessibilityPage from './pages/cookie-and-accessibility.jsx';
 import NotFoundPage from './pages/not-found.jsx';
 import ContactUsPage from './pages/contact-us.jsx';
-import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { getAllowCookie, setAllowCookie } from './services/cookieManager.js';
 import { useState, useEffect } from 'react';
 import { CookieEnum } from './data/enums.js';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  
+  return null;
+}
 
 // Layout-komponent med Navbar
 function LayoutWithNavbar({ showCookieBanner, setCookiePermission }) {
@@ -43,6 +53,7 @@ export default function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         {/* Rutter som ska ha Navbar */}
         <Route element={<LayoutWithNavbar cookiePermission={cookiePermission} setCookiePermission={setCookiePermission} showCookieBanner={showCookieBanner} />}>
