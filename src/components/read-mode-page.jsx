@@ -47,6 +47,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     let pageIndex = 1;
 
     const volumes = pefObject.bodyData.volumes;
+    console.log(volumes)
     for (let i = 0; i < volumes.length; i++) {
       const volume = volumes[i];
       if (volume.sections) {
@@ -88,8 +89,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                     }
                   }
                 });
-              }
-              
+              }            
               const pageElement = page && page.rows && (
                 <div key={`${i}-${j}-${k}`}>
                   <h3
@@ -214,8 +214,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
 
           { /* navigator buttons */}
           <div className="h-auto rounded-b border-t-2 border-neutral-400 text-md">
-            <div className="flex flex-row flex-nowrap items-center h-20 overflow-hidden border-b border-neutral-400">
-                           
+            <div className="flex flex-row flex-nowrap items-center h-20 overflow-hidden border-b border-neutral-400">        
               <button id={`page-${currentPageIndex +1}`} onClick={() => handleNextPageBtn()} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
@@ -230,115 +229,67 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               </button>
               
               
-              {/* <button onClick={() => handleSetCurrentPage(firstPageIndex)} className="h-full w-full px-2
-              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200  
-              hover:from-emerald-400 hover:to-emerald-700 hover:text-white
-              focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                Förstasidan
-              </button> */}
-               <button onClick={() => setReadmode(false)} className="h-full w-full px-2
+             <button onClick={() => setReadmode(false)} className="h-full w-full px-2
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2  
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-              Tillbaka till uppladdningssida
+                Tillbaka till uppladdningssida
             </button> 
             </div>
             
 
-            <div className="flex flex-row flex-nowrap items-center w-full h-20 overflow-hidden rounded-b">
-              
-            
-            <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const pageNumber = parseInt(e.target.elements.goToPage.value, 10);
-                  handleSetCurrentPage(pageNumber);
-                }}
-                className="flex flex-row h-full w-full items-center justify-center flex-grow 
-                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"
+            <div className="flex flex-row flex-nowrap items-stretch w-full h-32 overflow-hidden rounded-b">
+              <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const pageNumber = parseInt(e.target.elements.goToPage.value, 10);
+                handleSetCurrentPage(pageNumber);
+              }}
+              className="flex flex-row flex-1 items-center justify-center
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"
               >
-                <div className="flex flex-col items-center justify-center h-full w-full mx-4">
-                  <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: (av {maxPageIndex} sidor)</label>
-                  <div className="flex flex-row w-full">
-                    <input className="border-y border border-neutral-400" id="goToPage" type="number" min={firstPageIndex} max={maxPageIndex} required />
-                    <button
-                      type="submit"
-                      className="px-2 mx-1 h-full border border-gray-400 
-                      bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
-                      hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
-                      focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
-                      Gå till sida
-                    </button>
-                    
-                  </div>
-                  
+              <div className="flex flex-col items-center justify-center w-full py-4 px-4">
+                <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: (av {maxPageIndex} sidor)</label>
+                <div className="flex flex-row w-full">
+                  <input 
+                    className="flex-1 border-y border border-neutral-400" 
+                    id="goToPage" 
+                    type="number" 
+                    min={firstPageIndex} 
+                    max={maxPageIndex} 
+                    required 
+                  />
+                  <button
+                    type="submit"
+                    className="flex-1 px-2 mx-1 border border-gray-400 
+                    bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
+                    hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
+                    focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
+                    Gå till sida
+                  </button>
                 </div>
-                
+              </div>
               </form>
-              
-              
 
-          <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
-                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
-          <div className="mt-5">
-          {pefObject.metaData.title && <h2>Titel: {pefObject.metaData.title}</h2>}
-              {pefObject.metaData.author && <p className="mb-5">Författare: {pefObject.metaData.author}</p>}
-              </div>
+              <div className="flex flex-1 items-center justify-center
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
+                <div className="py-4 px-4">
+                  {pefObject.metaData.title && <h2>Titel: {pefObject.metaData.title}</h2>}
+                  {pefObject.metaData.author && <p className="mb-2">Författare: {pefObject.metaData.author}</p>}
+                </div>
               </div>
 
-              <div className="flex flex-row h-full w-full items-center justify-center flex-grow 
-                bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
-          <div className="m-2">
-          <p tabIndex={0}>Du befinner dig på sida {currentPageIndex}.</p> 
-
+              <div className="flex flex-1 items-center justify-center
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200"> 
+                <div className="p-4">
+                  <p tabIndex={0}>Du befinner dig på sida {currentPageIndex}.</p> 
+                </div>
               </div>
-              </div>
 
-
-          {/* <fieldset>
-            <legend className="font-medium mb-px">Växla vy:</legend>
-            <div className="flex flex-row justify-center items-center">
-              <input
-                type="radio"
-                id="normal-view"
-                name="view"
-                className="m-1"
-                value="NORMAL_VIEW"
-                checked={selectedView === FormatModeEnum.NORMAL_VIEW}
-                onChange={() => setSelectedView(FormatModeEnum.NORMAL_VIEW)} // Uppdatera tillfällig vy
-              />
-              <label htmlFor="normal-view">Svartskrift</label>
             </div>
-            <div className="flex flex-row justify-center items-center">
-              <input
-                type="radio"
-                id="braille-view"
-                name="view"
-                className="m-1"
-                value="BRAILLE_VIEW"
-                checked={selectedView === FormatModeEnum.BRAILLE_VIEW}
-                onChange={() => setSelectedView(FormatModeEnum.BRAILLE_VIEW)} // Uppdatera tillfällig vy
-              />
-              <label htmlFor="braille-view">Punktskrift</label>
-            </div>
-            {/* Knapp för att bekräfta valet */}
-            {/* <button
-                className="px-2 mx-1 h-full w-1/3 min-w-16 max-w-32 border border-gray-400 
-                bg-gradient-to-b from-gray-300 via-gray-200 to-gray-300 
-                hover:from-emerald-400 hover:to-emerald-700 hover:text-white 
-                focus:from-emerald-400 focus:to-emerald-700 focus:text-white"
-                onClick={handleConfirm}
-              >
-                Välj
-              </button>
-          </fieldset> */} 
-        {/* </div> */}
-      </div>
-    </div>
-  </div>
-
-      
-      </div>
+          </div>
+         </div>
+        </div>
       </div>
     </div >
   );
