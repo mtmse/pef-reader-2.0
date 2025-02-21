@@ -1,15 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { CookieEnum } from "../data/enums";
 import Footer from "../components/footer";
+import updateBrowserTabText from "../utils/updateBrowserTabText.js";
+
 
 export default function CookieAndAccessibilityPage({ cookiePermission, setCookiePermission }) {
   const navigate = useNavigate();
+  updateBrowserTabText( "Kakor och tillgänglighet | Digipunkt Legimus");
+
 
   return (
     <>
     <main className="mx-auto main-view px-20">
       <div className="screen-view p-10">
-      <h2 className="text-2xl font-bold mb-4" id="MainContentArea">Kakor och Tillgänglighet</h2>
+      <h2 className="text-2xl font-bold mb-4" tabIndex={0} id="MainContentArea">Kakor och Tillgänglighet</h2>
       <p className="mb-6">
         Syftet med denna policy är att ge dig som användare av Digital punktläsare webbplats
         information om hur vi använder kakor (cookies) på vår webbplats och vilka inställningar
