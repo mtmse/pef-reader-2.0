@@ -12,7 +12,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
     const [fileLoadStatus, setFileLoadStatus] = useState(FileLoadStatusEnum.INITIAL);
     const [showDots, setShowDots] = useState(true);
 
-    updateBrowserTabText( pefObject?.metadata?.title || "Digipunkt Legimus")
+    updateBrowserTabText( pefObject?.metadata?.title || "Uppladdning | Digipunkt Legimus")
 
     // Setup dropzone
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
