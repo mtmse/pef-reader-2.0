@@ -14,14 +14,13 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
 
     updateBrowserTabText( pefObject?.metadata?.title || "Uppladdning | Digipunkt Legimus")
 
-    // Setup dropzone
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         multiple: false,
         accept: {
             'image/x-pef': ['.pef'],
             'application/x-pef+xml': ['.pef'],
             'application/x-pentax-pef': ['.pef'],
-            'image/pef': ['.pef'] // Lägg till denna rad för Firefox
+            'image/pef': ['.pef'] 
 
         },
         onDrop: handleAddFile,
@@ -29,7 +28,6 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
     });
 
     useEffect(() => {
-        // Shows the third dot every second during the loading state
         const interval = setInterval(() => {
             setShowDots((state) => !state);
         }, 1000);
@@ -41,14 +39,14 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
         if (acceptedFiles) {
             if (checkIfPefFileType(acceptedFiles[0].type)) {
                 setFileName(acceptedFiles[0].name);
-                const reader = new FileReader() // Initializes a new FileReader object
+                const reader = new FileReader() 
 
-                reader.addEventListener("load", () => { // Executes when the file is successfully loaded
-                    const fileObject = fileReader(reader.result) // This object contains both metadata and body data
+                reader.addEventListener("load", () => { 
+                    const fileObject = fileReader(reader.result) // 
                     fileObject.then(resolvedObject => {
-                        if (resolvedObject.metaData.language === 'Svenska') { // Move this function to the "Braille Translator" button later!
-                            setSavedPageIndex(null) // Resets the saved page index
-                            setPefObject(resolvedObject); // Saves the file's contents as pefObject
+                        if (resolvedObject.metaData.language === 'Svenska') { 
+                            setSavedPageIndex(null) 
+                            setPefObject(resolvedObject); 
                             setFileLoadStatus(FileLoadStatusEnum.SUCCESSFUL)
                         } else {
                             alert('Tyvärr, den valda boken är inte på svenska. Just nu kan vi endast hantera svenska böcker. Meddela oss om du önskar en annan språkversion.');
@@ -61,7 +59,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 });
 
                 setFileLoadStatus(FileLoadStatusEnum.LOADING)
-                reader.readAsText(acceptedFiles[0]) // Starts reading the file
+                reader.readAsText(acceptedFiles[0])
 
             } else {
                 alert(`Fel: Filtypen ${acceptedFiles[0].type} som du försöker ladda är inte en PEF-fil.`);
@@ -76,23 +74,13 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
 
     function HandleSwapToReadMode() {
         if (pefObject) {
-            setReadmode(true); // IMPORTANT: Switching this component to read mode
+            setReadmode(true); 
         } else {
             alert('Fel: Lägg först till en PEF-fil innan du försöker läsa boken.');
         }
     }
 
-    // useEffect(() => {
-    //     // Scrolla till elementet med ID "MainContentArea" när komponenten monteras
-    //     const mainContentElement = document.getElementById("MainContentArea");
-    //     if (mainContentElement) {
-    //         mainContentElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    //         mainContentElement.focus();
-    //     }}, [])
-
-        // console.log(cookiePermission);
-
-    return (
+        return (
         <div className="flex flex-col pt-10 px-20 w-full screen-view">
 
             <div className="flex flex-col justify-center items-center p-4 md:p-8 lg:p-12">
@@ -101,17 +89,23 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                         <img src={brailleIcon} className="w-full h-full" alt="Punktskriftsikon" />
                     </div>
                     <div className="text-center md:text-left">
-                        <h2 id="MainContentArea" tabIndex={0} className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">Från Legimus till din punktdisplay</h2>
+                        <h2 id="MainContentArea" tabIndex={0} className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">
+                            Från Legimus till din punktdisplay
+                        </h2>
                     </div>
                 </div>
                 <div className="mt-4 md:mt-6 lg:mt-8 px-4 md:px-8 lg:px-12 text-center md:text-left">
-                    <p className="text-lg md:text-xl lg:text-2xl">När du har laddat ner en punktskriftsbok från Legimus kan du läsa den här med din punktdisplay.</p>
+                    <p className="text-lg md:text-xl lg:text-2xl">
+                        När du har laddat ner en punktskriftsbok från Legimus kan du läsa den här med din punktdisplay.
+                    </p>
                 </div>
 
                 {cookiePermission === CookieEnum.DENIED &&
                 <> 
                 <div className="m-5">
-                    <p className="text-lg md:text-xl">Eftersom du inte har godkänt kakor kommer din läsposition inte att sparas. Vill du godkänna kakor och spara din läsposition?</p>
+                    <p className="text-lg md:text-xl">
+                        Eftersom du inte har godkänt kakor kommer din läsposition inte att sparas. Vill du godkänna kakor och spara din läsposition?
+                    </p>
                 </div>
                 <button id="confirm-cookie" onClick={() => setCookiePermission(CookieEnum.ALLOWED)}
                 className="flex-none w-64 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out mr-2 w-4/5
@@ -129,7 +123,6 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
             <div className="flex flex-col items-start my-10">
                 <h3 className="text-4xl font-bold my-5">Ladda upp filen</h3>
 
-                {/* Disable the file-selector button while the file is being converted */}
                 {fileLoadStatus !== FileLoadStatusEnum.LOADING &&
                     <div {...getRootProps()}
                         className={`dropzone-container border-2 border-dashed border-purple-400 p-10 my-4 text-center 
@@ -178,61 +171,28 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 <legend className="text-2xl font-bold mb-2">Information om din uppladdade pef</legend>
                 <p><strong>Författare:</strong> {pefObject.metaData.author}</p>
 
-                {pefObject && pefObject.metaData && pefObject.metaData.language ? (
-                Object.entries(pefObject.metaData).map(([key, value]) => {
-                    return (
-                    value &&
-                    metadataVariableTranslation(key, pefObject.metaData.language) && (
+                {pefObject && pefObject.metaData && pefObject.metaData.language 
+                ? (Object.entries(pefObject.metaData).map(([key, value]) => {
+                    return (value && metadataVariableTranslation(key, pefObject.metaData.language) && (
                         <label key={key}>
                         <p>
                             <strong>{metadataVariableTranslation(key, pefObject.metaData.language)}:</strong> {value}
                         </p>
                         </label>
-                    
                     )
                     );
-                })
-                ) : (
-                <p>Ingen fil uppladdad. Välj fil att ladda upp.</p>
+                })) 
+                : (
+                <p>
+                    Ingen fil uppladdad. Välj fil att ladda upp.
+                </p>
                 )}
             </div>}
             </fieldset>
 
-            {/* <fieldset className="mt-10">
-                {pefObject && pefObject.metaData && pefObject.metaData.title 
-                ? <legend className="text-2xl font-bold" >Hur vill du läsa boken {pefObject.metaData.title}? 
-                </legend>
-                : <legend className="text-2xl font-bold" >Hur vill du läsa boken?</legend>}
-                <div className="flex flex-row my-6">
-                    <input
-                        type="radio"
-                        id="oneFlow"
-                        name="howToRead"
-                        value="ONE_FLOW"
-                        className="m-1"
-                        checked={howToRead === UnitModeEnum.ONE_FLOW}
-                        onChange={() => setHowToRead(UnitModeEnum.ONE_FLOW)}
-                    />
-                    <label htmlFor="oneFlow" className="ml-1 mr-10">
-                        Löpande text
-                    </label>
-
-                    <input
-                        type="radio"
-                        id="byPage"
-                        name="howToRead"
-                        value="PAGE_BY_PAGE"
-                        className="m-1"
-                        checked={howToRead === UnitModeEnum.PAGE_BY_PAGE}
-                        onChange={() => setHowToRead(UnitModeEnum.PAGE_BY_PAGE)}
-                    />
-                    <label htmlFor="byPage" className="ml-1">
-                        Sida för sida
-                    </label>
-                </div>
-            </fieldset> */}     
-
-            {savedPageIndex && <p className="mt-1">Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}.</p>}
+            {savedPageIndex && <p className="mt-1">
+                Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}.
+                </p>}
 
 
             <div className="mt-5 mb-10">
