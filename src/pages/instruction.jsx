@@ -57,11 +57,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
           </li> */}
           <li className="my-2">
             I läsläget navigerar du med tabb in i läsvyn. Fortsätt nedåt tills du når knappen för nästa sida och klicka på den. När du klickar på knappen för nästa sida kommer du automatiskt att förflyttas till nästa sida. Samma sak gäller för "Föregående sida".          </li>
-            <li>
-              Tangentbordsgenvägar: Använd <kbd className="bg-gray-200 px-1 rounded">alt</kbd> + <kbd className="bg-gray-200 px-1 rounded">page down</kbd> för föregående sida och <kbd className="bg-gray-200 px-1 rounded">alt</kbd> +<kbd className="bg-gray-200 px-1 rounded">page up</kbd> för nästa sida
-            </li>
         </ul>
-
 
       </div>
 
