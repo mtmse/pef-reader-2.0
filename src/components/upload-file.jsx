@@ -190,6 +190,41 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
             </div>}
             </fieldset>
 
+            {/* Behåll för att i framtiden vilja utvecka löpande text
+             <fieldset className="mt-10">
+                {pefObject && pefObject.metaData && pefObject.metaData.title 
+                ? <legend className="text-2xl font-bold" >Hur vill du läsa boken {pefObject.metaData.title}? 
+                </legend>
+                : <legend className="text-2xl font-bold" >Hur vill du läsa boken?</legend>}
+                <div className="flex flex-row my-6">
+                    <input
+                        type="radio"
+                        id="oneFlow"
+                        name="howToRead"
+                        value="ONE_FLOW"
+                        className="m-1"
+                        checked={howToRead === UnitModeEnum.ONE_FLOW}
+                        onChange={() => setHowToRead(UnitModeEnum.ONE_FLOW)}
+                    />
+                    <label htmlFor="oneFlow" className="ml-1 mr-10">
+                        Löpande text
+                    </label>
+
+                    <input
+                        type="radio"
+                        id="byPage"
+                        name="howToRead"
+                        value="PAGE_BY_PAGE"
+                        className="m-1"
+                        checked={howToRead === UnitModeEnum.PAGE_BY_PAGE}
+                        onChange={() => setHowToRead(UnitModeEnum.PAGE_BY_PAGE)}
+                    />
+                    <label htmlFor="byPage" className="ml-1">
+                        Sida för sida
+                    </label>
+                </div>
+            </fieldset>  */}
+
             {savedPageIndex && <p className="mt-1">
                 Din senaste sparade läsposition i {pefObject.metaData.title} är på sida {savedPageIndex}.
                 </p>}
