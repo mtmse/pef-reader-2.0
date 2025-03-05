@@ -141,7 +141,35 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     }
   }, [autoSave, currentPageIndex, savedPageIndex, setSavedPageIndex]);
 
+// Lägg till tangentbordsnavigeringsstöd
+useEffect(() => {
+  const handleKeyDown = (event) => {
+    if (event.key === "PageUp" && event.altKey) {
+      if (currentPageIndex < maxPageIndex) {
+        setCurrentPageIndex(currentPageIndex + 1);
+        event.preventDefault();
+      } else if( currentPageIndex === maxPageIndex) {
+        alert("Fel: Det finns inte fler sidor i boken")
+      }
+    }
+    else if (event.key === "PageDown" && event.altKey) {
+      if (currentPageIndex > 1) {
+        setCurrentPageIndex(currentPageIndex - 1);
+        event.preventDefault();
+      } else if (currentPageIndex === 1) {
+        alert("Fel: Du kan inte gå längre bakåt i den här boken.")
+      }
+    } 
+  };
 
+  // Lägg till event listener
+  window.addEventListener("keydown", handleKeyDown);
+
+  // Ta bort event listener vid unmount
+  return () => {
+    window.removeEventListener("keydown", handleKeyDown);
+  };
+}, [currentPageIndex, maxPageIndex, firstPageIndex]);
 
   function handleNextPageBtn() {
     if (currentPageIndex < maxPageIndex) {
