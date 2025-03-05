@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from "react";
 import _ from 'lodash';
-import brailleTranslator from "../utils/translator/brailleTranslator.js";
-import { filterUnnecessarySentence } from "../utils/filterSetences.js";
-import { manipulatePageIndexToRemoveUnnecessaryPages } from "../utils/filterPages.js";
-import { FormatModeEnum, CookieEnum } from "../data/enums.js";
+import brailleTranslator from "../../utils/translator/brailleTranslator.js";
+import { filterUnnecessarySentence } from "../../utils/filterSetences.js";
+import { manipulatePageIndexToRemoveUnnecessaryPages } from "../../utils/filterPages.js";
+import { FormatModeEnum, CookieEnum } from "../../data/enums.js";
 
 export default function ReadModeTestPage({ 
   cookiePermission, 

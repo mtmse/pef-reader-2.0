@@ -1,92 +1,117 @@
 import { useEffect, useState } from "react";
-import brailleTranslator from "../utils/translator/brailleTranslator.js";
-import { filterUnnecessarySentence } from "../utils/filterSetences.js"
-import { manipulatePageIndexToRemoveUnnecessaryPages } from "../utils/filterPages.js";
-import { FormatModeEnum, CookieEnum } from "../data/enums.js";
+import updateBrowserTabText from "../../utils/updateBrowserTabText.js";
+import brailleTranslator from "../../utils/translator/brailleTranslator.js";
+import { filterUnnecessarySentence } from "../../utils/filterSetences.js"
+import { manipulatePageIndexToRemoveUnnecessaryPages } from "../../utils/filterPages.js";
+import { FormatModeEnum, CookieEnum } from "../../data/enums.js";
+// import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 
+//gammal kod som har ersatts med behåller för historia
 
 export default function ReadModeFlow({ cookiePermission, savedPageIndex, setSavedPageIndex, setReadmode, pefObject }) {
+  // const [bookView, setBookView] = useState(FormatModeEnum.NORMAL_VIEW)
   const [hasScrolled, setHasScrolled] = useState(false)
+  // const [autoSave, setAutoSave] = useState(true)
   let autoSave = true;
   let maxPageIndex
   let startPageIndex
   let bookView = FormatModeEnum.NORMAL_VIEW
  
+  updateBrowserTabText(pefObject.metaData.title)
 
   console.log("Savedpagedindex is", savedPageIndex);
 
-  function navigateToPage(pageIndex) {
-    const pageId = `page-${pageIndex}`;
-    const element = document.getElementById(pageId);
-  
-    if (element) {
-      setSavedPageIndex(pageIndex);
-  
-      const handleScrollEnd = () => {
+  useEffect(() => {
+    if (savedPageIndex === null && startPageIndex !== undefined) {
+      setSavedPageIndex(startPageIndex);
+    }
+  }, [savedPageIndex, startPageIndex, setSavedPageIndex]);
+
+  useEffect(() => { // Runs just once
+    if (!hasScrolled && savedPageIndex !== null) {
+      const pageId = `page-${savedPageIndex}`;
+      const element = document.getElementById(pageId);
+      console.log("Element är", element)
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: "center" });
         element.focus();
         setHasScrolled(true);
-        console.log("Fokus satt på:", element);
-        // Ta bort lyssnaren efter att den körts
-        window.removeEventListener('scrollend', handleScrollEnd);
-      };
-  
-      // Lägg till en lyssnare för scrollend event
-      window.addEventListener('scrollend', handleScrollEnd);
-  
-      // Starta scrollningen
-      element.scrollIntoView({ behavior: 'smooth', block: "center" });
-    } else {
-      console.error(`Kunde inte hitta sidan ${pageIndex}`);
-    }
-  }
+      } else {
+        console.error(`Error: Unable to find the specified element with id ${pageId}.`);
+      }
+    } else if (savedPageIndex !== null) {
+      setHasScrolled(true);
 
-  useEffect(() => {
-    if (!hasScrolled && savedPageIndex !== null) {
-      navigateToPage(savedPageIndex);
     }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [savedPageIndex, hasScrolled]);
 
+//   useEffect(() => {
+//     const scrollableElement = document.getElementById("pages-scrollable-element");
 
-// Hantera scroll till sparad position
-useEffect(() => {
-  if (savedPageIndex !== null && !hasScrolled) {
-    const pageId = `page-${savedPageIndex}`;
-    const element = document.getElementById(pageId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: "nearest" });
-      element.focus();
-      setHasScrolled(true);
-    }
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [savedPageIndex]);
+// if (autoSave && scrollableElement) {
+//       const handleScroll = () => {
+//         const pages = scrollableElement.querySelectorAll("[id^='page-']");
+//         let lastVisiblePageIndex = null;
 
-// Autosave vid scroll
+//         // Get the top position of the scrollable element
+//         const scrollableElementTop = scrollableElement.getBoundingClientRect().top;
+
+//         // Loop through each page to determine which one is currently visible
+//         pages.forEach(page => {
+//           const rect = page.getBoundingClientRect();
+//           // Check if the bottom of the H3 page-id is above or equal to the top of the viewport of the scrollable element          
+//           if (rect.top <= scrollableElementTop) {
+//             lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10);
+//           }
+//         });
+
+//         // If a visible page index is found, update the savedPageIndex state
+//         if (lastVisiblePageIndex) {
+//           setSavedPageIndex(lastVisiblePageIndex);
+//           console.log("LastvisiblePage", lastVisiblePageIndex);
+//         }
+//       };
+
+//       // Attach the scroll event listener to the scrollable element
+//       scrollableElement.addEventListener("scroll", handleScroll);
+
+//       // Cleanup function to remove the scroll event listener when the component unmounts or autoSave is toggled off
+//       return () => {
+//         scrollableElement.removeEventListener("scroll", handleScroll);
+//       };
+//     }
+//   }, [autoSave, setSavedPageIndex]);
+
 useEffect(() => {
-  if (autoSave && hasScrolled) { // Lägg till hasScrolled check
+  if (autoSave) {
     const handleScroll = () => {
-      // Lägg till en debounce här för att minska antalet uppdateringar
       const pages = document.querySelectorAll("[id^='page-']");
       let lastVisiblePageIndex = null;
 
       pages.forEach(page => {
         const rect = page.getBoundingClientRect();
+        // Check if the page is within the viewport
         if (rect.top <= window.innerHeight && rect.bottom >= 0) {
-          lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10) - 2;
+          lastVisiblePageIndex = parseInt(page.id.replace("page-", ""), 10) - 2; // hamna rätt?
         }
       });
 
+      // Update savedPageIndex with the last visible page
       if (lastVisiblePageIndex) {
         setSavedPageIndex(lastVisiblePageIndex);
+        console.log("Last saved page", lastVisiblePageIndex);
       }
     };
 
+    // Add event listener for the window scroll
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }
-  		// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [autoSave, hasScrolled]);
+}, [autoSave, setSavedPageIndex]);
 
   const renderPages = () => {
     // Object to store all JSX elements
@@ -213,9 +238,29 @@ useEffect(() => {
   console.log("Active element är innan", document.activeElement);
 
   function handleScrollToPageIndex(index) {
-    navigateToPage(index);
-  }
-  
+    const pageId = `page-${index}`;
+    const element = document.getElementById(pageId);
+
+    if (element) {
+        setSavedPageIndex(index);
+
+        // Rulla till rätt sida först
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+
+       
+      if (document.activeElement !== element) {
+          element.tabIndex = 0;
+          element.focus();
+          console.log("Sätter fokus på sidan", element);
+          console.log("Active element är efter", document.activeElement);
+
+      }
+      
+    } else {
+        alert(`Sidan '${index}' kunde inte hittas.`);
+    }
+}
+
   return (
     <>
     { /* navigator buttons */}
@@ -245,7 +290,6 @@ useEffect(() => {
                 <form onSubmit={(e) => {
                   e.preventDefault();
                   const pageNumber = parseInt(e.target.elements.goToPage.value, 10);
-                  
                   handleScrollToPageIndex(pageNumber);
                 }}
                   className="flex flex-row h-full w-full items-center justify-center flex-grow 
@@ -320,7 +364,7 @@ useEffect(() => {
  
 
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-100">
-          <div id="pages-scrollable-element" className=" p-10 w-full flex flex-col m-auto" aria-label="Digital punktläsare">
+          <div id="pages-scrollable-element" className=" p-10 w-full flex flex-col m-auto ">
           {cookiePermission === CookieEnum.DENIED &&
           <div className="bg-yellow-200 border border-yellow-300 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
             <span tabIndex={0}>
@@ -330,8 +374,32 @@ useEffect(() => {
         }
             {renderPages()}
           </div>
-        </div>   
+        </div>
+
+        {/* <div className="flex flex-col bg-neutral-50 rounded my-20 pt-5 pb-20 px-10 w-full border shadow">
+          <h3 className="font-bold text-lg mb-3" tabIndex={0}>Grundläggande bibliografisk information</h3>
+
+          {/* Render metadata labels */}
+          {/* {pefObject.metaData && pefObject.metaData.language &&
+            Object.entries(pefObject.metaData)
+              .map(([key, value]) => {
+                return value && metadataVariableTranslation(key, pefObject.metaData.language) && (
+                  <label key={key}>
+                    <strong>{metadataVariableTranslation(key, pefObject.metaData.language)}:</strong> {value}
+                  </label>
+                );
+              })
+          } */}
+
+          {/* Render number of pages in the application */}
+          {/*{maxPageIndex &&
+            <label>
+              <strong>Antal sidor i applikationen:</strong> {maxPageIndex}
+            </label>
+          }
+        </div> */}
       </div>
       </>
+    // </div>
   )
 }
