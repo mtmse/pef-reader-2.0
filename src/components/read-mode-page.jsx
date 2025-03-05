@@ -141,7 +141,35 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     }
   }, [autoSave, currentPageIndex, savedPageIndex, setSavedPageIndex]);
 
-
+  // Lägg till tangentbordsnavigeringsstöd
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "PageUp" && event.altKey) {
+        if (currentPageIndex < maxPageIndex) {
+          setCurrentPageIndex(currentPageIndex + 1);
+          event.preventDefault();
+        } else if( currentPageIndex === maxPageIndex) {
+          alert("Fel: Det finns inte fler sidor i boken")
+        }
+      }
+      else if (event.key === "PageDown" && event.altKey) {
+        if (currentPageIndex > 1) {
+          setCurrentPageIndex(currentPageIndex - 1);
+          event.preventDefault();
+        } else if (currentPageIndex === 1) {
+          alert("Fel: Du kan inte gå längre bakåt i den här boken.")
+        }
+      } 
+    };
+  
+    // Lägg till event listener
+    window.addEventListener("keydown", handleKeyDown);
+  
+    // Ta bort event listener vid unmount
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [currentPageIndex, maxPageIndex, firstPageIndex]);
 
   function handleNextPageBtn() {
     if (currentPageIndex < maxPageIndex) {
@@ -181,15 +209,12 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     }
   }
 
-
-
   return (
     <div className="flex flex-col pt-5 px-10 w-full screen-view">
       <div className="full-height">
             
       <div className="flex flex-col justify-start items-center mt-20">
        
-
         {!autoSave && cookiePermission === CookieEnum.ALLOWED &&
           <div className="bg-blue-200 border border-blue-300 text-blue-700 px-4 py-2 mt-5 mb-1 rounded relative w-full text-center" role="alert">
             <span tabIndex={0}>
@@ -206,13 +231,12 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
           </div>
         }
         
-
         <div className="flex flex-col flex-nowrap justify-center align-center border border-neutral-500 rounded w-full">
           <div className="w-auto p-10 flex justify-center">
             {showCurrentPage(currentPageIndex)}
           </div>
 
-          { /* navigator buttons */}
+        {/* navigator buttons */}
           <div className="h-auto rounded-b border-t-2 border-neutral-400 text-md">
             <div className="flex flex-row flex-nowrap items-center h-20 overflow-hidden border-b border-neutral-400">        
               <button id={`page-${currentPageIndex +1}`} onClick={() => handleNextPageBtn()} className="h-full w-full px-2
@@ -228,16 +252,14 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 Föregående sida
               </button>
               
-              
-             <button onClick={() => setReadmode(false)} className="h-full w-full px-2
-              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-x-2  
+              <button onClick={() => setReadmode(false)} className="h-full w-full px-2
+              bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200
               hover:from-emerald-400 hover:to-emerald-700 hover:text-white
               focus:from-emerald-400 focus:to-emerald-700 focus:text-white">
                 Tillbaka till uppladdningssida
-            </button> 
+              </button> 
             </div>
             
-
             <div className="flex flex-row flex-nowrap items-stretch w-full h-32 overflow-hidden rounded-b">
               <form
               onSubmit={(e) => {
@@ -291,6 +313,6 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
          </div>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
