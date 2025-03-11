@@ -4,7 +4,7 @@ import { UnitModeEnum, FileLoadStatusEnum, CookieEnum } from "../data/enums.js"
 import { useDropzone } from 'react-dropzone'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile } from '@fortawesome/free-regular-svg-icons';
-import brailleIcon from '../media/braille-icon.png';
+import liggandeP from "../media/LiggandeP.png"
 import { metadataVariableTranslation } from "../data/metadataTranslator.js";
 import updateBrowserTabText from "../utils/updateBrowserTabText.js";
 
@@ -86,7 +86,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
             <div className="flex flex-col justify-center items-center p-4 md:p-8 lg:p-12">
                 <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-4">
                     <div className="h-24 w-24 md:h-20 md:w-20 flex-shrink-0">
-                        <img src={brailleIcon} className="w-full h-full" alt="Punktskriftsikon" />
+                        <img src={liggandeP} className="w-full h-full" alt="MTM:s Punktskriftsikon" />
                     </div>
                     <div className="text-center md:text-left">
                         <h2 id="MainContentArea" tabIndex={0} className="text-xl md:text-2xl lg:text-3xl font-bold mt-4 md:mt-0">
