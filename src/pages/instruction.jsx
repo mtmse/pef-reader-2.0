@@ -18,7 +18,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
           Välkommen till digipunkt — din digitala punktläsare!
         </h2>
         <p className="mb-6">
-          Den digitala punktläsaren är utformad för att göra det enklare för användare av punktdisplay att få tillgång till punktskriftsböcker digitalt och läsa dem direkt i webbläsaren.
+          Den digitala punktläsaren är utformad för att göra det enklare för användare av punktdisplay att få tillgång till punktskriftsböcker digitalt och läsa dem direkt i webbläsaren med hjälp av din skärmläsare.
         </p>
 
         <div className="mb-8">
