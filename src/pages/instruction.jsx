@@ -22,21 +22,33 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
         </p>
 
         <div className="mb-8">
-          <h3 className="text-md font-bold mb-2">Följ dessa enkla steg för att använda applikationen effektivt:</h3>
+          <h3 className="text-lg font-bold mb-2">Följ dessa enkla steg för att använda applikationen effektivt:</h3>
         </div>
 
+
         <div className="mb-8">
-          <h4 className="text-lg font-bold mb-2">
-            1. Ladda upp filen:
+          <h4 className="font-bold mb-2">
+            1. Ladda hem filen från Legimus:
           </h4>
           <p>
-            Klicka på knappen "Ladda upp fil" för att välja en punktskriftsfil (.pef) från din enhet.
+            Ladda hem en punktskriftsfil (.pef) från <a href="https://www.legimus.se/" className="text-blue-600"><strong>Legimus</strong></a> till din dator. Det enda du som är punktskriftsläsare behöver göra är att höra av dig till MTM och be om tillgång till Digipunkt. 
+
+            Det gör du lättast genom att kontakta oss via<a href="mailto:punktskrift@mtm.se" className='ms-2 font-semibold text-blue-600 hover:text-blue-700 underline' aria-label='Mail till punktskrift@mtm.se, tryck för att öppna mail-programmet'>punktskrift@mtm.se</a> eller per telefon: 040 653 27 20.  
           </p>
         </div>
 
         <div className="mb-8">
-          <h4 className="text-lg font-bold mb-2">
-            2. Bokens grundläggande bibliografiska information:
+          <h4 className="font-bold mb-2">
+            2. Ladda upp filen:
+          </h4>
+          <p>
+            Klicka på knappen "Ladda upp fil" för att välja punktskriftsfilen (.pef) från din enhet.
+          </p>
+        </div>
+
+        <div className="mb-8">
+          <h4 className="font-bold mb-2">
+            3. Bokens grundläggande bibliografiska information:
           </h4>
           <p className="my-2">
             När du laddar upp en pef-fil kan du ta del av mer information om den uppladdade boken, som beskrivning, utgivare, och datum.
@@ -44,8 +56,17 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
         </div>
 
         <div className="mb-8">
-          <h4 className="text-lg font-bold mb-2">
-            3. Spara senaste läspositionen:
+          <h4 className=" font-bold mb-2">
+            5. Läs boken:
+          </h4>
+          <p>
+            Välj Läs boken när du har laddat upp en .pef-fil.
+          </p>
+        </div>
+
+        <div className="mb-8">
+          <h4 className=" font-bold mb-2">
+            6. Spara senaste läspositionen:
           </h4>
           <p>
             För att spara den senaste läspositionen behöver du tillåta kakor. Den senaste läspositionen sparas automatiskt i kakor så fort du byter sida och visas automatiskt när du laddar upp samma bok igen.
@@ -53,8 +74,8 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
         </div>
 
         <div className="mb-8">
-          <h4 className="text-lg font-bold mb-2">
-            4. Navigera i boken:
+          <h4 className=" font-bold mb-2">
+            7. Navigera i boken:
             </h4>
           <p>
             Du använder knapparna "Nästa sida" och "Föregående sida" för att navigera i boken.

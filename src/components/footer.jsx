@@ -11,20 +11,20 @@ export default function Footer() {
           <nav className="mt-2">
           <Link
             to="/instruktion"
-            className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2 cursor-pointer"
+            className="text-md font-semibold text-blue-600 hover:text-blue-700 underline mx-2 cursor-pointer"
           >
             Användarinstruktioner
           </Link>
             |
             <a
-              className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2"
+              className="text-md font-semibold text-blue-600 hover:text-blue-700 underline mx-2"
               href="https://www.mtm.se/" target='_blank' rel="noreferrer"
             >
               Myndigheten för Tillgängliga Medier
             </a>
             |
             <a
-              className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2"
+              className="text-md font-semibold text-blue-600 hover:text-blue-700 underline mx-2"
               href="https://www.legimus.se/" target='_blank' rel="noreferrer"
             >
               Legimus
@@ -32,14 +32,14 @@ export default function Footer() {
             |      
             <Link
               to="/om-kakor-och-tillganglighet"
-              className="text-md font-semibold text-blue-500 hover:text-blue-700 underline mx-2 cursor-pointer"
+              className="text-md font-semibold text-blue-600 hover:text-blue-700 underline mx-2 cursor-pointer"
             >
               Kakor och tillgänglighet
             </Link>
             |
             <Link
               to="/kontakt"
-              className="text-md font-semibold text-blue-500 underline hover:text-blue-700 mx-2 cursor-pointer"
+              className="text-md font-semibold text-blue-600 underline hover:text-blue-700 mx-2 cursor-pointer"
             >
               Kontakta oss
             </Link>
