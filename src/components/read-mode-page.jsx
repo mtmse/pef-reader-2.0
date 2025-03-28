@@ -270,7 +270,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
                 bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"
                 >
                 <div className="flex flex-col items-center justify-center w-full py-4 px-4">
-                  <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange ett sidnummer: (av {maxPageIndex} sidor)</label>
+                  <label htmlFor="goToPage" className="w-full font-medium mb-1">Ange sidnummer: (av {maxPageIndex} sidor)</label>
                     <div className="flex flex-row w-full">
                       <input 
                         className="flex-1 border-y border border-neutral-400" 
