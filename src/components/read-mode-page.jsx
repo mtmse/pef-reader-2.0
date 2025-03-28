@@ -13,8 +13,9 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
   const contentRefs = useRef({}); 
   let autoSave = true;
   let bookView = FormatModeEnum.NORMAL_VIEW
-  const bookInfo = `${pefObject?.metaData?.title} av ${pefObject?.metaData?.author}`
-
+  const bookInfo = pefObject?.metaData?.title && pefObject?.metaData?.author 
+    ? `${pefObject.metaData.title} av ${pefObject.metaData.author}`
+    : "Uppläsning | Legimus"
   updateBrowserTabText(bookInfo || "Digipunkt Legimus");
 
   function isRowMostlyBlank(row) {
@@ -46,7 +47,6 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
     let pageIndex = 1;
 
     const volumes = pefObject.bodyData.volumes;
-    console.log(volumes)
     for (let i = 0; i < volumes.length; i++) {
       const volume = volumes[i];
       
@@ -295,7 +295,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
               <div className="flex flex-1 items-center justify-center
               bg-gradient-to-b from-neutral-200 via-neutral-100 to-neutral-200 border-r-2 border-neutral-200"> 
                 <div className="py-4 px-4">
-                  {pefObject.metaData.title && <h2>Titel: {pefObject.metaData.title}</h2>}
+                  {pefObject.metaData.title ? <h2>Titel: {pefObject.metaData.title}</h2> : <h2>Information om författare saknas</h2>}
                   {pefObject.metaData.author && <p className="mb-2">Författare: {pefObject.metaData.author}</p>}
                 </div>
               </div>
