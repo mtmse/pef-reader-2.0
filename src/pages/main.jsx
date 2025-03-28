@@ -10,7 +10,7 @@ import Footer from "../components/footer.jsx";
 
 export default function MainPage({ cookiePermission, setCookiePermission }) {
   const [pefObject, setPefObject] = useState(null);
-  const [fileName, setFileName] = useState('ingen fil vald');
+  const [fileName, setFileName] = useState('Ingen fil vald');
   const [viewMode, setViewMode] = useState(false);
   const [howToRead, setHowToRead] = useState(UnitModeEnum.ONE_FLOW);
   const [savedPageIndex, setSavedPageIndex] = useState(null);

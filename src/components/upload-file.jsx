@@ -42,25 +42,55 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 const reader = new FileReader() 
 
                 reader.addEventListener("load", () => { 
-                    const fileObject = fileReader(reader.result) // 
+                    const fileObject = fileReader(reader.result)
                     fileObject.then(resolvedObject => {
-                        console.log(resolvedObject)
-                        if (resolvedObject.metaData.language === 'Svenska') { 
+                
+                        if (resolvedObject) { 
                             setSavedPageIndex(null) 
                             setPefObject(resolvedObject); 
                             setFileLoadStatus(FileLoadStatusEnum.SUCCESSFUL)
                         } 
-                        else {
-                            alert('Ett problem uppstod när du försökte ladda upp boken. Försök igen eller kontakta oss med information om vilken bok du ville läsa.')
-                            setFileLoadStatus(FileLoadStatusEnum.FAILED)
-
+                        // else {
+                        //     // Om språket inte är Svenska, visa felmeddelande
+                        //     alert('Ett problem uppstod när du försökte ladda upp boken. Försök igen eller kontakta oss med information om vilken bok du ville läsa.')
+                        //     setFileLoadStatus(FileLoadStatusEnum.FAILED)
+                        // }
+                
+                        // Om du vill lägga till en extra kontroll för metadata (valfritt)
+                        if (!hasValidMetadata(resolvedObject.metaData)) {
+                            console.warn('Varning: Ofullständig metadata för filen, kan inte presentera information om boken')
                         }
                     }).catch(error => {
                         console.error("Error occurred while resolving the promise:", error);
                         setFileLoadStatus(FileLoadStatusEnum.FAILED)
                     });
                 });
-
+                
+                // Hjälpfunktion för att kontrollera metadata
+                function hasValidMetadata(metaData) {
+                  const keysToCheck = [
+                    'author', 
+                    'contributor', 
+                    'description', 
+                    'format', 
+                    'language', 
+                    'publisher', 
+                    'rights', 
+                    'source', 
+                    'subject', 
+                    'title', 
+                    'type', 
+                    'volumes'
+                  ];
+                
+                  const hasValidInfo = keysToCheck.some(key => {
+                    const value = metaData[key];
+                    return value !== null && value !== undefined && value !== '';
+                  });
+                
+                  return hasValidInfo;
+                }
+                
                 setFileLoadStatus(FileLoadStatusEnum.LOADING)
                 reader.readAsText(acceptedFiles[0])
 
@@ -70,7 +100,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 setFileName('filen kunde inte laddas upp.')
             }
         } else {
-            setFileName('ingen fil vald');
+            setFileName('Ingen fil vald');
             setFileLoadStatus(FileLoadStatusEnum.INITIAL)
         }
     }
@@ -137,7 +167,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                             </label>
                         ) : (
                             <>
-                                {(fileName !== 'ingen fil vald'  && fileName !== 'filen kunde inte laddas upp.') ? (
+                                {(fileName !== 'Ingen fil vald'  && fileName !== 'filen kunde inte laddas upp.') ? (
                                     <label htmlFor="file-input">
                                         Filen {fileName} har laddats upp. Klicka här för att byta fil (.pef)
                                     </label>
@@ -165,14 +195,14 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
             <div className="flex flex-row items-center">
                 <label className="mr-2 text-xl font-bold">Vald fil: </label>
                 <span>
-                    {fileName !== 'ingen fil vald' && <FontAwesomeIcon icon={faFile} className="mr-1" />}
+                    {fileName !== 'Ingen fil vald' && <FontAwesomeIcon icon={faFile} className="mr-1" />}
                     {fileName}</span>
             </div>
 
             <fieldset>{pefObject &&
             <div className="mt-10">
                 <legend className="text-2xl font-bold mb-2">Information om din uppladdade pef</legend>
-                <p><strong>Författare:</strong> {pefObject.metaData.author}</p>
+                {pefObject.metaData.author && <p><strong>Författare:</strong> {pefObject.metaData.author}</p>}
 
                 {pefObject && pefObject.metaData && pefObject.metaData.language 
                 ? (Object.entries(pefObject.metaData).map(([key, value]) => {
@@ -187,7 +217,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 })) 
                 : (
                 <p>
-                    Ingen fil uppladdad. Välj fil att ladda upp.
+                   Ingen information att presentera för vald fil.
                 </p>
                 )}
             </div>}
