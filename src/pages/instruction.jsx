@@ -15,7 +15,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
     <main className="mx-auto main-view">
       <div className="screen-view p-10">
         <h2 className="text-2xl font-bold mb-4" id="MainContentArea" tabIndex={0}>
-          Välkommen till digipunkt — din digitala punktläsare!
+          Välkommen till Digipunkt — din digitala punktläsare!
         </h2>
         <p className="mb-6">
           Den digitala punktläsaren är utformad för att göra det enklare för användare av punktdisplay att få tillgång till punktskriftsböcker digitalt och läsa dem direkt i webbläsaren med hjälp av din skärmläsare.
@@ -33,7 +33,7 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
           <p>
             Ladda hem en punktskriftsfil (.pef) från <a href="https://www.legimus.se/" className="text-blue-600"><strong>Legimus</strong></a> till din dator. Det enda du som är punktskriftsläsare behöver göra är att höra av dig till MTM och be om tillgång till Digipunkt. 
 
-            Det gör du lättast genom att kontakta oss via<a href="mailto:punktskrift@mtm.se" className='ms-2 font-semibold text-blue-600 hover:text-blue-700 underline' aria-label='Mail till punktskrift@mtm.se, tryck för att öppna mail-programmet'>punktskrift@mtm.se</a> eller per telefon: 040 653 27 20.  
+            Det gör du lättast genom att kontakta oss via<a href="mailto:punktskrift@mtm.se" className='ms-2 font-semibold text-blue-600 hover:text-blue-700 underline' aria-label='Mail till punktskrift@mtm.se, tryck för att öppna mail-programmet'>punktskrift@mtm.se</a> eller per telefon:<a href="tel+46406532720" className='ms-2 font-semibold text-blue-600 hover:text-blue-700 underline' aria-label="Om du använder mobiltelefon kan du klicka för att ringa 040 6532720">040 653 27 20</a>.  
           </p>
         </div>
 
@@ -89,11 +89,11 @@ export default function InstructionPage({ cookiePermission, setCookiePermission 
               Tangentbordsgenvägar: Använd 
               <kbd className="bg-gray-200 px-1 rounded">alt</kbd> 
               + 
-              <kbd className="bg-gray-200 px-1 rounded">page down</kbd> 
+              <kbd className="bg-gray-200 px-1 rounded">kommatecken (,)</kbd> 
               för föregående sida och 
               <kbd className="bg-gray-200 px-1 rounded">alt</kbd> 
               +
-              <kbd className="bg-gray-200 px-1 rounded">page up</kbd> för nästa sida.
+              <kbd className="bg-gray-200 px-1 rounded">punkt (.)</kbd> för nästa sida.
             </li>
           </ul>
         </div>

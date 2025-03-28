@@ -56,7 +56,7 @@ export default function ContactUsPage() {
                 <p>Telefon: 040-653720</p>
                 <div className='inline-flex'>
                 <p>E-post:</p>
-                <p><a href="mailto:punktskrift@mtm.se" className='ms-2 font-semibold text-blue-500 hover:text-blue-700 underline' aria-label='Mail till punktskrift@mtm.se, tryck för att öppna mail-programmet'>punktskrift@mtm.se</a></p>
+                <p><a href="mailto:punktskrift@mtm.se" className='ms-1 font-semibold text-blue-500 hover:text-blue-700 underline' aria-label='Mail till punktskrift@mtm.se, tryck för att öppna mail-programmet'>punktskrift@mtm.se</a></p>
                 </div>
             </div>
 

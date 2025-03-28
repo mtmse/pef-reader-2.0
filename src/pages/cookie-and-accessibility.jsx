@@ -15,7 +15,7 @@ export default function CookieAndAccessibilityPage({ cookiePermission, setCookie
       <div className="screen-view p-10">
       <h2 className="text-2xl font-bold mb-4" tabIndex={0} id="MainContentArea">Kakor och Tillgänglighet</h2>
       <p className="mb-6">
-        Syftet med denna policy är att ge dig som användare av Digital punktläsare webbplats
+        Syftet med denna policy är att ge dig som användare av Digipunkt
         information om hur vi använder kakor (cookies) på vår webbplats och vilka inställningar
         du kan göra när det gäller kakor.
       </p>
@@ -74,7 +74,7 @@ export default function CookieAndAccessibilityPage({ cookiePermission, setCookie
           Om du stöter på hinder eller upplever att vi inte uppfyller lagens krav,
           vänligen <a
             href="https://www.legimus.se/anvaenda-legimus/tillgaenglighetsredogoerelser/tillgaenglighetsredogoerelse-foer-legimusse/"
-            class="text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">
+            class="ms-1 font-semibold text-blue-500 hover:text-blue-700 underline" target="_blank" rel="noopener noreferrer">
             besök vår tillgänglighetsredogörelse</a>
           . Din feedback är ovärderlig för oss och hjälper oss att skapa en bättre upplevelse för alla användare.
         </p>
@@ -82,15 +82,15 @@ export default function CookieAndAccessibilityPage({ cookiePermission, setCookie
         <p className="mt-4 font-bold">Du kan även nå oss på följande sätt:</p>
         <ul className="list-disc list-inside">
           <li className="m-2">
-            Skicka e-post till <a href="mailto:info@mtm.se" className="text-blue-500 hover:text-blue-700">info@mtm.se</a>
+            Skicka e-post till <a href="mailto:info@mtm.se" className="ms-1 font-semibold text-blue-500 hover:text-blue-700 underline" aria-label="Klicka för att öppna mailprogrammet och maila info@mtm.se">info@mtm.se</a>
           </li>
           <li className="m-2">
-            Ring oss på <span className="text-blue-500">040-6532710</span>
+            Ring oss på 040-6532710
           </li>
         </ul>
 
         <p className="my-10">
-          Webbplatsen uppdaterades senast den 27 januari 2025.
+          Webbplatsen uppdaterades den 28/3 2025.
         </p>
       </section>
 

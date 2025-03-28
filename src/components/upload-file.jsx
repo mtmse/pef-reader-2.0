@@ -44,13 +44,16 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 reader.addEventListener("load", () => { 
                     const fileObject = fileReader(reader.result) // 
                     fileObject.then(resolvedObject => {
+                        console.log(resolvedObject)
                         if (resolvedObject.metaData.language === 'Svenska') { 
                             setSavedPageIndex(null) 
                             setPefObject(resolvedObject); 
                             setFileLoadStatus(FileLoadStatusEnum.SUCCESSFUL)
-                        } else {
-                            alert('Tyvärr, den valda boken är inte på svenska. Just nu kan vi endast hantera svenska böcker. Meddela oss om du önskar en annan språkversion.');
+                        } 
+                        else {
+                            alert('Ett problem uppstod när du försökte ladda upp boken. Försök igen eller kontakta oss med information om vilken bok du ville läsa.')
                             setFileLoadStatus(FileLoadStatusEnum.FAILED)
+
                         }
                     }).catch(error => {
                         console.error("Error occurred while resolving the promise:", error);
@@ -244,7 +247,7 @@ export default function UploadFile({ cookiePermission, setCookiePermission, save
                 {fileLoadStatus === FileLoadStatusEnum.FAILED && (
                     <div className="flex flex-row items-center bg-red-100 text-red-700 rounded pl-5 p-3 shadow-md max-w-md">
                         <span className="font-semibold text-sm" tabIndex={0}>
-                            Uppladdningen misslyckades. Uppdatera sidan och försök igen innan du kontaktar kundtjänsten <a href="/kontakt" class="underline">här</a>.
+                            Uppladdningen misslyckades. Uppdatera sidan och försök igen innan du kontaktar kundtjänsten <a href="/kontakt" className="underline">här</a>.
                         </span>
                     </div>
                 )}

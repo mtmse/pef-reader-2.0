@@ -146,7 +146,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "PageUp" && event.altKey) {
+      if (event.key === "." && event.altKey) {
         if (currentPageIndex < maxPageIndex) {
           setCurrentPageIndex(currentPageIndex + 1);
           event.preventDefault();
@@ -154,7 +154,7 @@ export default function ReadModePageByPage({ savedPageIndex, setSavedPageIndex, 
           alert("Fel: Det finns inte fler sidor i boken")
         }
       }
-      else if (event.key === "PageDown" && event.altKey) {
+      else if (event.key === "," && event.altKey) {
         if (currentPageIndex > 1) {
           setCurrentPageIndex(currentPageIndex - 1);
           event.preventDefault();
