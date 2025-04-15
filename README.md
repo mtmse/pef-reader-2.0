@@ -8,11 +8,13 @@ This application is designed to make it easier for users, with or without visual
 ## Important links
 - https://www.mtm.se/globalassets/punktskriftsnamnden/svenska_skrivregler_for_punktskrift.pdf
 - https://braillespecs.github.io/pef/pef-specification.html
+- https://dev.azure.com/MTMDynamics/Legimus/_wiki/wikis/Legimus.wiki/123/Legimus-Braille 
 
 ## Versions
 
-### 2.0.2 (Not in development yet)
-  - Type here what was developed 
+### 2.0.2 
+  - Read mode only one page at the time
+  - Better reading-view and less options
 
 ### 2.0.1 (latest Version)
   - Changed from saving the row position by clicking on it to automatically saving the page position.
@@ -59,8 +61,3 @@ This application contains the following pages:
 
 
 ## Known errors
-
-- ?
-- <strike>Router didn't work properly in the Static Web App.</strike> (resolved with useNavigate).
-- <strike>"a" tags in the header could not be tabbed.</strike> (resolved by using buttons instead of "a" tags).
-- <strike>Unable to upload files in Chrome browser due to dropzone issue.</strike> (resolved by setting "useFsAccessApi: false" in dropzone settings).
