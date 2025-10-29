@@ -8,7 +8,7 @@ import { blankSign } from "../../data/MapBrailleToSwedishCharacters.js"
 export default function brailleTranslator(braillePhrase) {
 
     if (braillePhrase === null || (typeof braillePhrase !== 'string' && !Array.isArray(braillePhrase))) {
-        return null; 
+        return null;
     }
 
     let newPhrase = ""
@@ -19,7 +19,7 @@ export default function brailleTranslator(braillePhrase) {
         let newChar // undefined
 
         if (isIgnoreSymbol(currentBrailleChar)) {
-            newPhrase += currentBrailleChar
+            //newPhrase += currentBrailleChar // Why add braille signs that should be ignored?
             continue
         }
 
@@ -28,17 +28,17 @@ export default function brailleTranslator(braillePhrase) {
             continue
         }
 
-        if (i +1 <= braillePhrase.length) { // If equals or longer than the current phrase's length
+        if (i + 1 <= braillePhrase.length) { // If equals or longer than the current phrase's length
 
             //Check for next character
-            let nextChar = braillePhrase.charAt(i +1)
+            let nextChar = braillePhrase.charAt(i + 1)
 
             // add current and next symbols together
             const doubleSymbols = currentBrailleChar + nextChar
 
             if (isIgnoreSymbol(doubleSymbols)) {
-                newPhrase += doubleSymbols
-                i += 2 
+                //newPhrase += doubleSymbols // Why add braille signs that should be ignored?
+                i += 1
                 continue
             }
 
@@ -47,7 +47,7 @@ export default function brailleTranslator(braillePhrase) {
 
             if (newChar) {
                 newPhrase += newChar
-                i += 2  
+                i += 1
                 continue
             }
         }
@@ -67,7 +67,7 @@ export default function brailleTranslator(braillePhrase) {
             i++
 
             if (newChar.length > 1) {
-                i += newChar.length +1 // added +1 and it seems work fine but not 100 precent then check it again later
+                i += newChar.length + 1 // added +1 and it seems work fine but not 100 precent then check it again later
             }
 
             continue
