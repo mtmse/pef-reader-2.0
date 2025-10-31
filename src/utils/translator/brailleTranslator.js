@@ -19,7 +19,7 @@ export default function brailleTranslator(braillePhrase) {
         let newChar // undefined
 
         if (isIgnoreSymbol(currentBrailleChar)) {
-            //newPhrase += currentBrailleChar // Why add braille signs that should be ignored?
+            //newPhrase += currentBrailleChar // No need to add ignored symbols.
             continue
         }
 
@@ -37,7 +37,7 @@ export default function brailleTranslator(braillePhrase) {
             const doubleSymbols = currentBrailleChar + nextChar
 
             if (isIgnoreSymbol(doubleSymbols)) {
-                //newPhrase += doubleSymbols // Why add braille signs that should be ignored?
+                //newPhrase += doubleSymbols // No need to add ignored symbols.
                 i += 1
                 continue
             }
